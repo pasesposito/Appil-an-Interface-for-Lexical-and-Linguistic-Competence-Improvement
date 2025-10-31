@@ -24,3 +24,11 @@ The project was developed as part of the thesis *“Appìl: An Interface for Lex
 - **Progress Dashboard:** Tracks growth across vocabulary and grammar dimensions.  
 - **Scalable Architecture:** Easily extendable for future research or additional modules.  
 
+---
+
+## Dependencies
+
+The project requires the following external libraries:
+
+- [**Font Awesome**](https://fontawesome.com/) – for icons and visual enhancements.  
+- [**Three.js**](https://threejs.org/) – for rendering 3D and interactive visual elements.  
