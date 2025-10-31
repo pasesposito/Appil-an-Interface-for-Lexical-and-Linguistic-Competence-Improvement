@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head>
+
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+  <link rel="stylesheet" th:href="@{fontawesome-free-6.6.0-web/css/all.min.css}"
+ />
+
+
+<meta charset="UTF-8">
+<title>Lesson ONE</title>
+<style>
+#loading {
+	display: none;
+	font-size: 18px;
+	color: #007BFF;
+	margin: 20px 0;
+}
+
+.result-item {
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.result-item:hover {
+	background-color: #f0f0f0;
+}
+
+.Content {
+	margin: 2%;
+}
+
+@media ( max-width : 768px) {
+	.wrapping {
+		flex-direction: column;
+	}
+	.Content {
+		width: 90%;
+		max-width: 100%;
+	}
+}
+</style>
+
+<link rel="stylesheet" th:href="@{/css/lessons.css}"
+ />
+
+</head>
+<body>
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+	<div class="wrapping">
+
+
+		<div class="sidebar-lessons">
+			<div id="section-list">
+				<!-- Section names will be dynamically added here -->
+			</div>
+			
+			
+			
+		</div>
+
+		<div class="Content">
+    <!-- Introduction and Overview -->
+    <div class="text-container active" id="section1">
+        <h1>Lesson 1: Introduction</h1>
+        <p>Hello everyone! Welcome to the first lesson of our English course.</p>
+        <p>Language is the key that unlocks the world around us. It enables us to name, describe, and interact with the objects that fill our daily lives. For those venturing into a new language, learning the names of familiar objects is a fundamental step toward building a sense of belonging and connection to their surroundings.</p>
+    </div>
+
+    <!-- Alphabet and Pronunciation -->
+    <div class="text-container" id="section2">
+        <h1>Introduction to the Alphabet</h1>
+        <p>Today, we will explore the English <span class="hoverable" data-hover-text="The set of letters used to write the English language.">alphabet</span> and focus on correct pronunciation.</p>
+        <p>The aim of this lesson is to familiarize you with the pronunciation of all 26 letters in the English <span class="hoverable" data-hover-text="The set of letters used to write the English language.">alphabet</span>.</p>
+        <p>We'll start by introducing each letter. I will display the letter, provide its sound, and offer an example word. For instance, the letter A is pronounced "A," and the example word is "<span class="hoverable" data-hover-text="A type of fruit that is typically red or green and grows on trees.">Apple</span>".</p>
+        <p>Following this, we will practice numbers from 1 to 20. You will see the number, hear its pronunciation, and match it with pictures.</p>
+        <p>We will also cover the days of the week. You'll see a calendar, hear the names of the days, and match them with images.</p>
+        <p>Additionally, we'll discuss countries and nationalities. You’ll view a map, hear the names of different countries and their nationalities, and play a matching game with flags.</p>
+    </div>
+
+    <!-- Alphabet Overview -->
+    <div class="text-container" id="section3">
+        <h1>Alphabet Overview</h1>
+        <p>The English alphabet, much like the Italian one, is used to write words and sentences. It consists of 26 letters, some of which are identical to the Italian letters and others that differ slightly.</p>
+    </div>
+
+    <!-- Interactive Alphabet Practice -->
+    <div class="text-container" id="section4">
+        <h1>Interactive Alphabet Practice</h1>
+        <p>Find a text and click on the letters to highlight their sounds. Listen to the pronunciation of each letter by clicking on the boxes.</p>
+        <th:block th:replace="~{fragments/searchWiki :: searchWiki}"></th:block>
+        <script th:src="@{/js/search.js}"></script>
+        <h2 style="text-align: center">Search for an article:</h2>
+        <div id="letter-container" class="letter-container">
+            <!-- Letters will be dynamically added here -->
+        </div>
+        <div class="wrapper">
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <!-- Numbers and Practice -->
+    <div class="text-container" id="section5">
+        <h1>Why Numbers Matter</h1>
+        <p>Numbers are fundamental to everyday life. We use them to tell time, manage money, express our age, and understand quantities. Whether you’re ordering food, asking for directions, or chatting with friends, knowing numbers is crucial.</p>
+    </div>
+
+    <div class="text-container" id="section6">
+        <h1>A Familiar Start</h1>
+        <p>English and Italian share similarities in their numbers, especially at the start. For example, "one" resembles "uno," "two" is similar to "due," and so on. This familiarity gives us a head start in learning the first few numbers.</p>
+        <div class="number-container" id="numbersContainer">
+            <!-- Numbers 1 to 10 will be dynamically added here -->
+        </div>
+    </div>
+
+    <div class="text-container" id="section7">
+        <h1>Exploring "Teen" Numbers</h1>
+        <p>Beyond ten, we enter the "teen" numbers. Thirteen, fourteen, fifteen—notice the pattern? These numbers are essentially the base number (three, four, five) with the suffix "-teen." It’s a straightforward pattern to learn.</p>
+        <div class="number-container" id="teenNumbersContainer">
+            <!-- Teen numbers 11 to 20 will be dynamically added here -->
+        </div>
+    </div>
+
+    <div class="text-container" id="section8">
+        <h1>Pronunciation Practice</h1>
+        <p>Let’s practice the pronunciation of English numbers. Repeat after me: one, two, three... up to twenty. The more you practice, the more natural it will become. Don’t worry if you make mistakes—learning is a process, and we’re all in this together!</p>
+        <div class="scrambled-numbers" id="scrambledNumbersContainer">
+            <!-- Numbers 1 to 20 will be dynamically added here -->
+        </div>
+    </div>
+
+    <div class="text-container" id="section9">
+        <h1>The Journey Continues</h1>
+        <p>We’ve made great progress with English numbers today. Remember, practice is key. Use numbers in your daily life, count objects around you, and feel free to ask questions if you need assistance.</p>
+    </div>
+
+    <!-- Days of the Week -->
+    <div class="text-container" id="section10">
+        <h1>The Rhythm of Time: Days of the Week</h1>
+        <p>Time moves forward in a rhythm we call the week. Each day has its unique name, feeling, and role in our lives.</p>
+        <div class="day-container">
+            <h2>Monday</h2>
+            <p>The first day of the week, a fresh start after the weekend.</p>
+        </div>
+        <div class="day-container">
+            <h2>Tuesday</h2>
+            <p>The second day, a chance to build on Monday’s efforts.</p>
+        </div>
+        <div class="day-container">
+            <h2>Wednesday</h2>
+            <p>The middle of the week, the midpoint of our work and rest.</p>
+        </div>
+        <div class="day-container">
+            <h2>Thursday</h2>
+            <p>One day left before the weekend arrives.</p>
+        </div>
+        <div class="day-container">
+            <h2>Friday</h2>
+            <p>The final day of the workweek, a time to celebrate the week's accomplishments.</p>
+        </div>
+        <div class="day-container">
+            <h2>Saturday</h2>
+            <p>The first day of the weekend, perfect for relaxation and fun.</p>
+        </div>
+        <div class="day-container">
+            <h2>Sunday</h2>
+            <p>The last day of the week, ideal for rest and spending time with loved ones.</p>
+        </div>
+        <h1>Order of the Days</h1>
+        <p>The days of the week follow a specific order, starting with Monday and ending with Sunday. Learning this order helps you talk about your routine, make plans, and understand schedules.</p>
+    	
+    	
+    </div>
+
+    <!-- Countries and Nationalities -->
+    <div class="text-container" id="section11">
+        <h1>Our World, a Tapestry of Countries</h1>
+        <p>Think of the Earth as a giant puzzle, with each piece representing a different country. Each country has its unique characteristics, much like people do.</p>
+        <h1>Home Sweet Home</h1>
+        <p>Countries are like homes, each with its own special name, language, and culture. People from a country are known as <strong>citizens</strong>.</p>
+        <h1>Every Country Matters</h1>
+        <p>Just as neighborhoods consist of various houses, the world consists of many countries. Each one is unique but equally important in our global community.</p>
+        <h1>Exploring Countries</h1>
+        <p>We can learn about countries through maps and flags. Flags are symbols representing each country, and maps show their locations.</p>
+    
+    
+        <h1>Nationalities</h1>
+        <p>People from different countries are known by their <strong>nationalities</strong>. For instance, individuals from Italy are Italians, and those from Spain are Spaniards.</p>
+    </div>
+
+    <!-- Lesson Summary -->
+    <div class="text-container" id="section12">
+        <h1>Lesson Summary</h1>
+        <p>In this lesson, we covered essential aspects of learning English. We started with the basics of the English alphabet, progressed to understanding numbers, and explored the days of the week. We also examined countries and nationalities, enhancing our global geography knowledge. Each part of this lesson builds on the previous one, so continue practicing and reviewing. The more you engage with these concepts, the more confident you'll become in using English in everyday life!</p>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    
+    
+    	
+</div>
+
+
+
+
+		<div class="scroll-arrows-lesson-desktop">
+			<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+			<button id="readAloud" onclick="readCurrentSection()">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="stopReading" onclick="stopReading()"
+				style="background-color: red; display: none;">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+		</div>
+		
+		
+				
+	
+	
+	</div>
+
+
+
+
+	<div class="scroll-arrows-lesson-mobile">
+		<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+		<button id="readAloud" onclick="readCurrentSection()">
+			<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+				style="width: 24px; height: 24px;">
+		</button>
+		<button id="stopReading" onclick="stopReading()"
+			style="background-color: red; display: none;">
+			<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+				style="width: 24px; height: 24px;">
+		</button>
+		<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+	</div>
+
+
+	<div class="activities">
+
+				<a href="worldcountries" class="grid-item nouns"> <i
+					class="fas fa-globe" target="_blank"></i>
+					<h3>Countries</h3>
+				</a> <a href="flaggame" class="grid-item verbs" target="_blank"> <i
+					class="fas fa-flag"></i>
+					<h3>Flags Game</h3>
+				</a> <a href="pronunciationgame" class="grid-item tense" target="_blank"> <i
+					class="fas fa-volume-up"></i>
+					<h3>Alphabet and Pronunciation</h3>
+				</a>
+			</div>
+		
+	
+
+	<script th:src="@{/js/lesson.js}"></script>
+	
+
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+	<script>
+		function readSection(sectionId) {
+			const section = document.getElementById(sectionId);
+			if (section) {
+				const text = section.innerText || section.textContent;
+				if (text) {
+					pronounceWord(text);
+				} else {
+					console.error("No text found in the section.");
+				}
+			} else {
+				console.error("Section not found.");
+			}
+		}
+	</script>
+	<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // English alphabet
+
+	    // Create letters dynamically
+	    alphabet.split('').forEach(letter => {
+	        const letterDiv = document.createElement('div');
+	        letterDiv.textContent = letter;
+	        letterDiv.classList.add('letter');
+	        letterDiv.addEventListener('click', () => {
+	            highlightLetterInText(letter);
+	            pronounceLetter(letter);
+	        });
+	        document.getElementById('letter-container').appendChild(letterDiv);
+	    });
+
+	    // Function to highlight letter in text and enable word pronunciation on hover
+	    function highlightLetterInText(letter) {
+	        const textContainer = document.getElementById('result');
+	        const text = textContainer.textContent;
+	        const words = text.split(/\s+/); // Split text into words
+
+	        // Clear previous content
+	        textContainer.innerHTML = '';
+
+	        // Iterate through words
+	        words.forEach(word => {
+	            const wordSpan = document.createElement('span');
+	            let wordText = word;
+	            if (word.match(new RegExp(letter, 'gi'))) {
+	                wordText = word.replace(new RegExp(`(${letter})`, 'gi'), '<span class="highlight">$1</span>');
+	                wordSpan.classList.add('word');
+	                wordSpan.addEventListener('click', () => {
+	                    pronounceWord(word);
+	                });
+	            }
+	            wordSpan.innerHTML = wordText + ' ';
+	            textContainer.appendChild(wordSpan);
+	        });
+	    }
+
+	    // Function to pronounce letter using Web Speech API
+	    function pronounceLetter(letter) {
+	        pronounceWord(letter);
+	    }
+
+	    // Function to pronounce word using Web Speech API
+	    function pronounceWord(word) {
+	        if (word && typeof word === 'string' && word.trim()) {
+	            const utterance = new SpeechSynthesisUtterance(word.trim());
+	            utterance.lang = 'en-US'; // Set language to English (United States)
+	            speechSynthesis.speak(utterance);
+	        } else {
+	            console.error('Invalid word provided for pronunciation');
+	        }
+	    }
+	});
+
+	document.addEventListener('DOMContentLoaded', function() {
+	    const numbers = [
+	        { num: 1 },
+	        { num: 2 },
+	        { num: 3 },
+	        { num: 4 },
+	        { num: 5 },
+	        { num: 6 },
+	        { num: 7 },
+	        { num: 8 },
+	        { num: 9 },
+	        { num: 10 },
+	        { num: 11 },
+	        { num: 12 },
+	        { num: 13 },
+	        { num: 14 },
+	        { num: 15 },
+	        { num: 16 },
+	        { num: 17 },
+	        { num: 18 },
+	        { num: 19 },
+	        { num: 20 },
+	    ];
+
+	    const scrambledNumbersContainer = document.getElementById('scrambledNumbersContainer');
+
+	    // Function to shuffle array randomly
+	    function shuffleArray(array) {
+	        for (let i = array.length - 1; i > 0; i--) {
+	            const j = Math.floor(Math.random() * (i + 1));
+	            [array[i], array[j]] = [array[j], array[i]];
+	        }
+	        return array;
+	    }
+
+	    // Shuffle the numbers array
+	    const shuffledNumbers = shuffleArray(numbers);
+
+	    // Create number boxes dynamically in scrambled order
+	    shuffledNumbers.forEach(number => {
+	        const numberBox = document.createElement('div');
+	        numberBox.classList.add('number-box');
+	        numberBox.textContent = number.num;
+	        numberBox.addEventListener('click', () => {
+	            pronounceWord(number.num.toString()); // Use the function to pronounce the number
+	            // No need to show number image as we're not using external images
+	        });
+	        scrambledNumbersContainer.appendChild(numberBox);
+	    });
+	});
+
+	   </script>
+	   
+	   
+</body>
+</html>

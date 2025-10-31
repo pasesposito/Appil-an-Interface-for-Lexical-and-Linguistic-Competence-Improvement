@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appìl - Lessons</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    
+    <style>
+.Content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure the content takes up the full viewport height */
+}
+
+.grid-container {
+    width: 80%; /* Set the width of the grid container */
+    max-width: 1200px; /* Optional: Set a maximum width for larger screens */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    grid-gap: 20px;
+    margin: 0 auto; /* Center the grid container horizontally */
+    padding: 20px; /* Optional: Add padding inside the grid container */
+}
+
+@media (max-width: 1024px) {
+    .grid-container {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.grid-item {
+    position: relative;
+    height: 200px;
+    border: 5px solid #D6EBFF;
+    padding: 20px;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.grid-item a {
+    text-decoration: none;
+    color: inherit; /* Ensure text color is inherited from parent */
+    display: block; /* Make the link cover the entire grid item */
+    height: 100%; /* Make the link cover the entire height of the grid item */
+    width: 100%; /* Make the link cover the entire width of the grid item */
+    display: flex; /* Use flex to center content */
+    justify-content: center;
+    align-items: center;
+}
+
+.grid-item:hover {
+    background-color: #b3d4ff;
+    color: #000;
+}
+
+/* Background colors for each lesson */
+.quick-reach-lessons .grid-item.lesson1 {
+    background-color: #e0f7fa; /* Light cyan */
+    color: #000; /* Dark text for light background */
+}
+
+.quick-reach-lessons .grid-item.lesson2 {
+    background-color: #b3e5fc; /* Light blue */
+    color: #000; /* Dark text for light background */
+}
+
+.quick-reach-lessons .grid-item.lesson3 {
+    background-color: #81d4fa; /* Sky blue */
+    color: #000; /* Dark text for light background */
+}
+
+.quick-reach-lessons .grid-item.lesson4 {
+    background-color: #4fc3f7; /* Blue */
+    color: #fff; /* Light text for darker background */
+}
+
+.quick-reach-lessons .grid-item.lesson5 {
+    background-color: #29b6f6; /* Medium blue */
+    color: #fff; /* Light text for darker background */
+}
+
+.quick-reach-lessons .grid-item.lesson6 {
+    background-color: #03a9f4; /* Dodger blue */
+    color: #fff; /* Light text for darker background */
+}
+
+.quick-reach-lessons .grid-item.lesson7 {
+    background-color: #0288d1; /* Deep blue */
+    color: #fff; /* Light text for darker background */
+}
+
+.quick-reach-lessons .grid-item.lesson8 {
+    background-color: #0277bd; /* Dark blue */
+    color: #fff; /* Light text for darker background */
+}
+
+.quick-reach-lessons .grid-item.lesson9 {
+    background-color: #01579b; /* Navy blue */
+    color: #fff; /* Light text for darker background */
+}
+
+.quick-reach-lessons .grid-item.lesson10 {
+    background-color: #003c8f; /* Darker Navy blue */
+    color: #fff; /* Light text for darker background */
+}
+
+
+
+    </style>
+</head>
+<body>
+    <!-- Include header fragment -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <div class="Content quick-reach-lessons">
+        <div class="grid-container">
+            <div class="grid-item lesson1">
+                <a th:href="@{/lesson1}">
+                    <h1>Lesson 1</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson2">
+                <a th:href="@{/lesson2}">
+                    <h1>Lesson 2</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson3">
+                <a th:href="@{/lesson3}">
+                    <h1>Lesson 3</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson4">
+                <a th:href="@{/lesson4}">
+                    <h1>Lesson 4</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson5">
+                <a th:href="@{/lesson5}">
+                    <h1>Lesson 5</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson6">
+                <a th:href="@{/lesson6}">
+                    <h1>Lesson 6</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson7">
+                <a th:href="@{/lesson7}">
+                    <h1>Lesson 7</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson8">
+                <a th:href="@{/lesson8}">
+                    <h1>Lesson 8</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson9">
+                <a th:href="@{/lesson9}">
+                    <h1>Lesson 9</h1>
+                </a>
+            </div>
+            <div class="grid-item lesson10">
+                <a th:href="@{/lesson10}">
+                    <h1>Lesson 10</h1>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include footer fragment -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

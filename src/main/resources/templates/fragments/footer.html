@@ -1,0 +1,113 @@
+<head>
+<meta charset="UTF-8">
+</head>
+
+
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="footer">
+
+
+	<div id="overlay" class="overlay" style="display: none;">
+
+
+		<!-- Cookie Banner -->
+		<div id="cookie-banner" class="cookie-banner" style="display: none;">
+			<div class="cookie-banner-content">
+				<p style="margin-bottom: 10px; font-weight: 400">
+					We use technical cookies to ensure an optimal browsing experience.<br>
+					<b>By continuing to browse, you accept the use of cookies.</b> <br>
+					<a href="/privacy-policy" class="privacy-link">Read our privacy
+						policy.</a>
+				</p>
+				<button onclick="acceptCookies()">Accetta</button>
+			</div>
+		</div>
+
+	</div>
+
+	<!-- Desktop Footer -->
+	<footer class="desktop-footer footer">
+		<div>
+			<p style="font-weight: bold">
+				Appìl is created by <a
+					href="https://www.dipsumdills.it/en/teacher/pasquale-esposito">
+					Pasquale Esposito </a>
+			</p>
+			<p>
+				This content is licensed under <a
+					href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1"
+					target="_blank" rel="license noopener noreferrer"
+					style="display: inline-block;"> Creative Commons
+					Attribution-ShareAlike 4.0 International <img
+					style="height: 15px !important; margin-left: 3px; vertical-align: text-bottom;"
+					src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+					alt=""> <img
+					style="height: 15px !important; margin-left: 3px; vertical-align: text-bottom;"
+					src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"
+					alt=""> <img
+					style="height: 15px !important; margin-left: 3px; vertical-align: text-bottom;"
+					src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"
+					alt="">
+				</a>
+			</p>
+			<p>
+				<a th:href="@{/privacypolicy}" style="color: black">Privacy
+					policy</a>&nbsp;&nbsp; <a th:href="@{/terms}" style="color: black">Terms
+					of Use</a>
+			</p>
+		</div>
+	</footer>
+
+	<!-- Mobile Footer -->
+	<footer class="mobile-footer footer">
+		<div>
+			<p>
+				Appìl is licensed under <a
+					href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1"
+					target="_blank" rel="license noopener noreferrer"
+					style="display: inline-block;"> CC BY-SA 4.0 <img
+					style="height: 15px !important; margin-left: 3px; vertical-align: text-bottom;"
+					src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+					alt=""> <img
+					style="height: 15px !important; margin-left: 3px; vertical-align: text-bottom;"
+					src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"
+					alt=""> <img
+					style="height: 15px !important; margin-left: 3px; vertical-align: text-bottom;"
+					src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"
+					alt="">
+				</a>
+			</p>
+			<p>
+				<a th:href="@{/privacypolicy}" style="color: black">Privacy
+					policy</a>&nbsp;&nbsp; <a th:href="@{/terms}" style="color: black">Terms
+					of Use</a>
+			</p>
+
+		</div>
+	</footer>
+
+	<script>
+		// Function to check cookie acceptance
+		function checkCookieAcceptance() {
+			if (localStorage.getItem('cookiesAccepted') === 'true') {
+				document.getElementById('cookie-banner').style.display = 'none';
+				document.getElementById('overlay').style.display = 'none'; // Hide overlay
+			} else {
+				document.getElementById('cookie-banner').style.display = 'flex';
+				document.getElementById('overlay').style.display = 'block'; // Show overlay
+			}
+		}
+
+		// Function to handle cookie acceptance
+		function acceptCookies() {
+			localStorage.setItem('cookiesAccepted', 'true');
+			document.getElementById('cookie-banner').style.display = 'none';
+			document.getElementById('overlay').style.display = 'none'; // Hide overlay
+		}
+
+		// Use DOMContentLoaded instead of window.onload
+		document.addEventListener("DOMContentLoaded", function() {
+			checkCookieAcceptance();
+		});
+	</script>
+</div>
+

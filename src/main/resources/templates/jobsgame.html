@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+<script th:src="@{/js/quizfunctions.js}"></script>
+<title>Game - Job Titles</title>
+<style type="text/css">
+
+
+.Content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 20px;
+	width: 100%;
+	height: 100%;
+}
+
+#game-container {
+	background: #fff;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	width: 80%;
+	max-width: 100%;
+}
+
+#image-container {
+	justify-content: center;
+	display: flex;
+}
+
+#options-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 10px;
+}
+
+.option {
+	display: flex;
+	width: 50%;
+	justify-content: center;
+	margin: 5px 0;
+	padding: 10px;
+	background-color: #e9ecef;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#info-container {
+	margin: 10px;
+	justify-content: center;
+	margin-top: 10px;
+	text-align: left; /* Align text to the left within the container */
+	font-size: 0.5em;
+	/* Slightly smaller text size for the info container */
+	color: #333; /* Darker text color for better readability */
+	display: flex !important; /* Use flexbox to arrange items in a line */
+	flex-wrap: wrap; /* Allow wrapping if necessary */
+	gap: 7px; /* Space between items */
+}
+
+#info-container p {
+	margin: 0; /* Remove default margin to align items neatly */
+}
+
+.option {
+	display: block;
+	margin: 5px 0;
+	padding: 10px;
+	background-color: #e9ecef;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.option:hover {
+	background-color: #d6d9db;
+}
+
+#image-container img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media ( max-width : 768px) {
+	
+	.option {
+		
+		width:90%;
+	
+	}
+}
+
+
+
+</style>
+ <link rel="stylesheet" th:href="@{/css/quiz.css}">
+</head>
+<body>
+
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+	  <button id="showInstructions">?</button>
+	  
+	  <div id="instructionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Instructions</h2>
+        
+        <h1>Jobs Game</h1>
+        
+        <p>Welcome to the Jobs Game! This interactive quiz is designed to test your knowledge of various job roles and their descriptions. Your goal is to match job titles with their correct definitions. Here’s how to play:</p>
+        
+        <h3>How to Play:</h3>
+        <ul>
+            <li><strong>Read the Question:</strong> Each round will present you with a job title. Your task is to select the correct description for this job from a list of options.</li>
+            <li><strong>Select an Option:</strong> Click on one of the available descriptions. If you think it matches the job title, choose it!</li>
+            <li><strong>Feedback:</strong> After selecting an option, you will receive immediate feedback on whether your choice was correct or incorrect. Pay attention to the feedback to learn more about the job roles.</li>
+            <li><strong>Next Question:</strong> Once you’ve received feedback, click the "Next" button to move on to the next job title and description set.</li>
+            <li><strong>Score Points:</strong> Correct answers will earn you points. Try to achieve the highest score by correctly matching as many job titles with their descriptions as possible.</li>
+        </ul>
+        
+        <h3>Example:</h3>
+        <p>If the job title is "Nurse," you’ll need to choose the correct description from the options, such as "Provides medical care and support to patients." Select the right description to earn points and move closer to a high score!</p>
+        
+        <p>Get ready to challenge yourself and learn more about different professions. Good luck, and have fun playing the Jobs Game!</p>
+    </div>
+</div>
+
+
+	<div class="Content">
+		<div id="game-container">
+			<h1>Job Titles Quiz</h1>
+			<!-- Image and its details -->
+			<div id="image-container" style="display: none;">
+				<!-- Image will be inserted here with the link -->
+			</div>
+			<div id="info-container" style="display: none;">
+				<!-- Detailed image information will be inserted here -->
+			</div>
+			<div id="question-container"></div>
+			<div id="options-container"></div>
+			<button id="next-button">Next</button>
+			<p id="feedback"></p>
+			<div id="notification"></div>
+
+
+		</div>
+	</div>
+
+	<script>
+const jobTitles = [
+    'Software Developer', 'Teacher', 'Nurse', 'Doctor', 'Accountant', 
+    'Construction Worker', 'Sales Manager', 'Graphic Designer', 'Chef', 
+    'Marketing Specialist', 'Electrician', 'Mechanic', 'Journalist', 
+    'Pharmacist', 'Police Officer', 'Firefighter', 'Dentist', 'Veterinarian', 
+    'Architect', 'Financial Analyst', 'Data Scientist', 'Project Manager', 
+    'Web Developer', 'Civil Engineer', 'HR Manager', 'Administrative Assistant', 
+    'Social Worker', 'Consultant', 'Lawyer', 'Realtor', 'Real Estate Agent', 
+    'Event Planner', 'Personal Trainer', 'Photographer', 'Artist', 
+    'Paralegal', 'Plumber', 'Optometrist', 'Occupational Therapist', 
+    'Speech Therapist', 'Physical Therapist', 'Nanny', 'Cleaner', 
+    'Interpreter', 'Travel Agent', 'Insurance Agent', 'Musician', 
+    'Producer', 'Director'
+];
+
+const jobDescriptions = [
+    'Designs and develops software applications.', 'Educates and instructs students in various subjects.', 
+    'Provides medical care and support to patients.', 'Diagnoses and treats illnesses and injuries.', 
+    'Manages financial records and prepares tax returns.', 'Performs physical labor on construction sites.', 
+    'Oversees sales activities and manages sales teams.', 'Creates visual content for various media.', 
+    'Prepares and cooks meals in a restaurant or other food establishment.', 
+    'Develops and executes marketing strategies to promote products or services.', 
+    'Installs and repairs electrical systems.', 'Maintains and repairs vehicles and machinery.', 
+    'Writes and reports news stories.', 'Dispenses medications and advises patients on their use.', 
+    'Enforces laws and protects citizens.', 'Responds to emergencies and provides firefighting services.', 
+    'Provides dental care and performs dental procedures.', 'Provides medical care for animals.', 
+    'Designs buildings and structures.', 'Analyzes financial data to guide investment decisions.', 
+    'Uses data to inform business decisions and strategies.', 'Plans and executes projects.', 
+    'Creates and maintains websites.', 'Designs and oversees construction projects.', 
+    'Manages human resources functions and employee relations.', 'Provides administrative support in office settings.', 
+    'Helps individuals and families improve their quality of life.', 'Offers expert advice in various fields.', 
+    'Represents clients in legal matters and provides legal advice.', 'Assists clients in buying or selling properties.', 
+    'Plans and coordinates events.', 'Provides fitness training and guidance.', 'Takes and edits photographs.', 
+    'Creates and performs visual art.', 'Assists lawyers in legal research and documentation.', 
+    'Installs and repairs plumbing systems.', 'Provides eye care and vision correction.', 
+    'Helps patients perform daily activities and regain independence.', 'Assists patients with speech and language difficulties.', 
+    'Helps patients improve physical function and mobility.', 'Cares for children in private households.', 
+    'Cleans homes or offices.', 'Translates spoken language between parties.', 'Helps clients plan and book travel arrangements.', 
+    'Sells and manages insurance policies.', 'Performs and composes music.', 'Oversees the production of films and television shows.', 
+    'Directs films and television shows.'
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+// Function to shuffle an array
+function shuffleArray(array) {
+    const arr = [...array]; // Make a copy of the array to avoid modifying the original
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// Function to get random descriptions
+function getRandomDescriptions(correctDescription) {
+    // Create an array of incorrect descriptions
+    const incorrectDescriptions = jobDescriptions.filter(desc => desc !== correctDescription);
+    // Shuffle and select a subset of incorrect descriptions
+    const shuffledIncorrect = shuffleArray(incorrectDescriptions).slice(0, 3);
+    // Combine the correct description with the incorrect options and shuffle
+    const allOptions = shuffleArray([correctDescription, ...shuffledIncorrect]);
+    return allOptions;
+}
+
+//Load the current question
+async function loadQuestion() {
+    if (currentQuestionIndex >= jobTitles.length) {
+        showResult();
+        return;
+    }
+
+    const jobTitle = jobTitles[currentQuestionIndex];
+    const correctDescription = getCorrectDescription(jobTitle);
+    const options = getRandomDescriptions(correctDescription);
+
+    const questionContainer = document.getElementById('question-container');
+    const optionsContainer = document.getElementById('options-container');
+    const feedback = document.getElementById('feedback');
+    const imageContainer = document.getElementById('image-container');
+    const infoContainer = document.getElementById('info-container');
+
+    questionContainer.textContent = `What is the job description for "${jobTitle}"?`;
+    optionsContainer.innerHTML = '';
+
+    options.forEach(option => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'option';
+        optionElement.textContent = option;
+        optionElement.addEventListener('click', () => checkAnswer(option, correctDescription));
+        optionsContainer.appendChild(optionElement);
+    });
+
+    feedback.textContent = '';
+
+    // Fetch image data for the current job title
+    const nounData = await getWord(jobTitle);
+
+    if (nounData && nounData.img) {
+        // Create an anchor tag and an image element
+        const linkElement = document.createElement('a');
+        linkElement.href = nounData.img;
+        linkElement.target = '_blank'; // Open link in a new tab
+
+        const imgElement = document.createElement('img');
+        imgElement.src = nounData.img;
+        imgElement.alt = `Image related to ${jobTitle}`;
+        imgElement.style.display = 'block'; // Ensure the image is displayed as block
+        
+        // Append the image to the link, and the link to the container
+        linkElement.appendChild(imgElement);
+        imageContainer.innerHTML = ''; // Clear previous content
+        imageContainer.appendChild(linkElement);
+        imageContainer.style.display = 'flex'; // Show the container
+
+        // Display additional information if available
+        let infoHtml = '';
+        if (nounData.imgAuthor) infoHtml += `<p><strong>Author:</strong> ${nounData.imgAuthor}</p>`;
+        if (nounData.imgTitle) infoHtml += `<p><strong>Title:</strong> ${nounData.imgTitle}</p>`;
+        if (nounData.imgLicense) infoHtml += `<p><strong>License:</strong> ${nounData.imgLicense}</p>`;
+        if (nounData.imgDescription) infoHtml += `<p><strong>Description:</strong> ${nounData.imgDescription}</p>`;
+        infoContainer.innerHTML = infoHtml;
+        infoContainer.style.display = infoHtml ? 'flex' : 'none'; // Show or hide info container based on availability
+
+    } else {
+        imageContainer.style.display = 'none'; // Hide the container if no image URL
+        infoContainer.style.display = 'none'; // Hide the info container if no image URL
+    }
+}
+
+
+
+// Check the selected answer
+function checkAnswer(selectedOption, correctDescription) {
+    const feedback = document.getElementById('feedback');
+
+    if (selectedOption === correctDescription) {
+feedback.style.color = "green";
+feedback.style.fontWeight = "bold";
+        feedback.textContent = 'Correct!';
+        addPointsToUser(5);
+        score++;
+    } else {
+    	feedback.style.color = "red";
+    	feedback.style.fontWeight = "bold";
+        feedback.textContent = `Incorrect! The correct description is "${correctDescription}".`;
+    }
+
+    document.getElementById('next-button').disabled = false;
+}
+
+// Get the correct description for a job title
+function getCorrectDescription(jobTitle) {
+    const titleToDescription = {
+        'Software Developer': 'Designs and develops software applications.',
+        'Teacher': 'Educates and instructs students in various subjects.',
+        'Nurse': 'Provides medical care and support to patients.',
+        'Doctor': 'Diagnoses and treats illnesses and injuries.',
+        'Accountant': 'Manages financial records and prepares tax returns.',
+        'Construction Worker': 'Performs physical labor on construction sites.',
+        'Sales Manager': 'Oversees sales activities and manages sales teams.',
+        'Graphic Designer': 'Creates visual content for various media.',
+        'Chef': 'Prepares and cooks meals in a restaurant or other food establishment.',
+        'Marketing Specialist': 'Develops and executes marketing strategies to promote products or services.',
+        'Electrician': 'Installs and repairs electrical systems.',
+        'Mechanic': 'Maintains and repairs vehicles and machinery.',
+        'Journalist': 'Writes and reports news stories.',
+        'Pharmacist': 'Dispenses medications and advises patients on their use.',
+        'Police Officer': 'Enforces laws and protects citizens.',
+        'Firefighter': 'Responds to emergencies and provides firefighting services.',
+        'Dentist': 'Provides dental care and performs dental procedures.',
+        'Veterinarian': 'Provides medical care for animals.',
+        'Architect': 'Designs buildings and structures.',
+        'Financial Analyst': 'Analyzes financial data to guide investment decisions.',
+        'Data Scientist': 'Uses data to inform business decisions and strategies.',
+        'Project Manager': 'Plans and executes projects.',
+        'Web Developer': 'Creates and maintains websites.',
+        'Civil Engineer': 'Designs and oversees construction projects.',
+        'HR Manager': 'Manages human resources functions and employee relations.',
+        'Administrative Assistant': 'Provides administrative support in office settings.',
+        'Social Worker': 'Helps individuals and families improve their quality of life.',
+        'Consultant': 'Offers expert advice in various fields.',
+        'Lawyer': 'Represents clients in legal matters and provides legal advice.',
+        'Realtor': 'Assists clients in buying or selling properties.',
+        'Real Estate Agent': 'Assists clients in buying or selling properties.',
+        'Event Planner': 'Plans and coordinates events.',
+        'Personal Trainer': 'Provides fitness training and guidance.',
+        'Photographer': 'Takes and edits photographs.',
+        'Artist': 'Creates and performs visual art.',
+        'Paralegal': 'Assists lawyers in legal research and documentation.',
+        'Plumber': 'Installs and repairs plumbing systems.',
+        'Optometrist': 'Provides eye care and vision correction.',
+        'Occupational Therapist': 'Helps patients perform daily activities and regain independence.',
+        'Speech Therapist': 'Assists patients with speech and language difficulties.',
+        'Physical Therapist': 'Helps patients improve physical function and mobility.',
+        'Nanny': 'Cares for children in private households.',
+        'Cleaner': 'Cleans homes or offices.',
+        'Interpreter': 'Translates spoken language between parties.',
+        'Travel Agent': 'Helps clients plan and book travel arrangements.',
+        'Insurance Agent': 'Sells and manages insurance policies.',
+        'Musician': 'Performs and composes music.',
+        'Producer': 'Oversees the production of films and television shows.',
+        'Director': 'Directs films and television shows.'
+    };
+
+    return titleToDescription[jobTitle] || '';
+}
+
+// Show the result of the game
+function showResult() {
+    const questionContainer = document.getElementById('question-container');
+    const optionsContainer = document.getElementById('options-container');
+    const feedback = document.getElementById('feedback');
+    const nextButton = document.getElementById('next-button');
+
+    questionContainer.textContent = `Game over! Your score: ${score}/${jobTitles.length}`;
+    optionsContainer.innerHTML = '';
+    feedback.textContent = '';
+    nextButton.style.display = 'none';
+}
+
+//Event listener for the Next button
+document.getElementById('next-button').addEventListener('click', () => {
+    currentQuestionIndex++;
+    document.getElementById('next-button').disabled = true;
+
+    // Clear the image and attribution containers before loading the next question
+    const imageContainer = document.getElementById('image-container');
+    const infoContainer = document.getElementById('info-container');
+
+    imageContainer.innerHTML = '';  // Clear previous image content
+    imageContainer.style.display = 'none';  // Hide the image container
+
+    infoContainer.innerHTML = '';  // Clear previous attribution content
+    infoContainer.style.display = 'none';  // Hide the attribution container
+
+    loadQuestion();
+});
+
+
+// Initialize the game
+loadQuestion();
+
+</script>
+
+ <script th:src="@{/js/quizfunctions.js}"></script>
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

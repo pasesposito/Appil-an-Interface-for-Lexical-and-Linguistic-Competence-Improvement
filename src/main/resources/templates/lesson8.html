@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+	<th:block th:replace="~{fragments/head :: head}"></th:block>
+	<meta charset="UTF-8">
+	<title>Lesson 8: Prepositions of Place</title>
+	<link rel="stylesheet" th:href="@{/css/lessons.css}" />
+	<style>
+		
+		
+		.cloze-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.cloze-row span {
+	margin: 0 5px;
+}
+
+.cloze-input {
+	width: 100px;
+	padding: 5px;
+	font-size: 1em;
+	margin: 0 5px;
+}
+
+#loading {
+	display: none;
+	font-size: 18px;
+	color: #007BFF;
+	margin: 20px 0;
+}
+
+.result-item {
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.result-item:hover {
+	background-color: #f0f0f0;
+}
+
+.Content {
+	margin: 2%;
+}
+
+@media ( max-width : 768px) {
+	.wrapping {
+		flex-direction: column;
+	}
+	.Content {
+		width: 90%;
+		max-width: 100%;
+	}
+}
+
+#feedback {
+	margin-top: 20px;
+	font-weight: bold;
+}
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
+}
+
+.flashcard {
+	width: 100px;
+	height: 50px;
+	background-color: #f2f2f2;
+	border: 1px solid #ddd;
+	margin: 5px;
+	text-align: center;
+	line-height: 50px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.flashcard.dragging {
+	opacity: 0.5;
+}
+
+.dropzone {
+	width: 120px;
+	height: 60px;
+	border: 2px dashed #ccc;
+	margin: 10px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	line-height: 60px;
+}
+
+.dropzone.over {
+	background-color: #e6ffe6;
+	border-color: #66ff66;
+}
+
+.flashcards-container, .dropzones-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.game-board {
+	display: grid;
+	grid-template-columns: repeat(4, 100px);
+	gap: 10px;
+	margin: 0 auto;
+	max-width: 450px;
+}
+
+.card {
+	width: 100px;
+	height: 100px;
+	background-color: #ddd;
+	border: 1px solid #ccc;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.card.flipped {
+	background-color: #fff;
+}
+
+.card.matched {
+	background-color: #4caf50;
+	color: #fff;
+}
+
+.button {
+	display: inline-block;
+	padding: 10px 20px;
+	margin-top: 20px;
+	font-size: 16px;
+	text-align: center;
+	color: #fff;
+	background-color: #007bff;
+	border: none;
+	border-radius: 5px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.button:hover {
+	background-color: #0056b3;
+}
+	</style>
+	 <style>
+        .question-container {
+            margin-bottom: 20px;
+        }
+        .question-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .question-image {
+            max-width: 300px;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        .options label {
+            margin: 5px 0;
+        }
+        #feedback {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+	<div class="wrapping">
+		<div class="sidebar-lessons">
+			<div id="section-list">
+				<!-- Section List can be dynamically populated based on the lesson -->
+			</div>
+		</div>
+
+		<div class="Content">
+			<!-- Section 1: Lesson Introduction -->
+			<div class="text-container active" id="section1">
+	<h1>Lesson Objectives</h1>
+	<p>By the end of this lesson, you will be able to:</p>
+	<ul>
+		<li><strong>Use prepositions of place</strong> correctly to describe the position of objects or people in English. Examples include prepositions such as:
+			<ul>
+				<li><strong>In</strong> (e.g., The book is <strong>in</strong> the box).</li>
+				<li><strong>On</strong> (e.g., The cup is <strong>on</strong> the table).</li>
+				<li><strong>At</strong> (e.g., She is <strong>at</strong> the door).</li>
+				<li><strong>Under</strong> (e.g., The cat is <strong>under</strong> the chair).</li>
+				<li><strong>Next to</strong> (e.g., The lamp is <strong>next to</strong> the bed).</li>
+				<li><strong>In front of</strong> (e.g., The car is <strong>in front of</strong> the house).</li>
+				<li><strong>Behind</strong> (e.g., The dog is <strong>behind</strong> the tree).</li>
+				<li><strong>Between</strong> (e.g., The park is <strong>between</strong> the two stores).</li>
+			</ul>
+		</li>
+		<li><strong>Expand your vocabulary</strong> by learning and using new words related to:
+			<ul>
+				<li><strong>Personality adjectives</strong> (e.g., kind, funny, smart, brave).</li>
+				<li><strong>Weather conditions</strong> (e.g., sunny, rainy, cloudy, windy).</li>
+				<li><strong>Adventures and travel</strong> (e.g., explore, discover, journey).</li>
+			</ul>
+		</li>
+		<li><strong>Understand and apply adverbs</strong> to describe actions more vividly, including:
+			<ul>
+				<li><strong>Speed</strong> (e.g., quickly, slowly).</li>
+				<li><strong>Manner</strong> (e.g., carefully, loudly).</li>
+			</ul>
+		</li>
+	</ul>
+	<p>Let's dive into these concepts and practice using them in different contexts through fun exercises and activities!</p>
+</div>
+
+
+			<!-- Section 2: Explanation -->
+<div class="text-container" id="section2">
+	<h1>Understanding Prepositions of Place</h1>
+	<p>Prepositions of place are words that help describe the location of people, animals, or objects in relation to other things. These prepositions allow us to explain where something is in space, whether it's inside, on top of, beside, or far from something else. Here are some of the most common prepositions of place:</p>
+
+	<h2>1. <strong>In</strong></h2>
+	<p><strong>In</strong> is used when something is inside a space or an enclosed area. Think of it as being fully surrounded by something.</p>
+	<ul>
+		<li><strong>Example 1:</strong> The book is <strong>in</strong> the box. (The book is inside the box.)</li>
+		<li><strong>Example 2:</strong> The cat is <strong>in</strong> the room. (The cat is inside the room.)</li>
+		<li><strong>Example 3:</strong> The toys are <strong>in</strong> the basket. (The toys are inside the basket.)</li>
+	</ul>
+
+	<h2>2. <strong>On</strong></h2>
+	<p><strong>On</strong> is used when something is placed on the surface of something else, or it’s resting on top of something.</p>
+	<ul>
+		<li><strong>Example 1:</strong> The cup is <strong>on</strong> the table. (The cup is resting on the surface of the table.)</li>
+		<li><strong>Example 2:</strong> The picture is <strong>on</strong> the wall. (The picture is attached to the wall.)</li>
+		<li><strong>Example 3:</strong> The keys are <strong>on</strong> the counter. (The keys are placed on the counter’s surface.)</li>
+	</ul>
+
+	<h2>3. <strong>At</strong></h2>
+	<p><strong>At</strong> is used when referring to a specific point or location, especially in relation to places, events, or positions. It’s more about a general location.</p>
+	<ul>
+		<li><strong>Example 1:</strong> She is <strong>at</strong> the door. (She is standing near or right at the door.)</li>
+		<li><strong>Example 2:</strong> I am <strong>at</strong> the bus stop. (The bus stop is the location.)</li>
+		<li><strong>Example 3:</strong> We are <strong>at</strong> the restaurant. (We are at the place where food is served.)</li>
+	</ul>
+
+	<h2>4. <strong>Under</strong></h2>
+	<p><strong>Under</strong> describes a position where something is below or beneath something else.</p>
+	<ul>
+		<li><strong>Example 1:</strong> The cat is <strong>under</strong> the chair. (The cat is beneath the chair.)</li>
+		<li><strong>Example 2:</strong> The shoes are <strong>under</strong> the bed. (The shoes are below the bed.)</li>
+		<li><strong>Example 3:</strong> There’s a box <strong>under</strong> the desk. (The box is beneath the desk.)</li>
+	</ul>
+
+	<h2>5. <strong>Next to</strong></h2>
+	<p><strong>Next to</strong> means beside or very close to something, usually with little or no space between them.</p>
+	<ul>
+		<li><strong>Example 1:</strong> The lamp is <strong>next to</strong> the bed. (The lamp is right beside the bed.)</li>
+		<li><strong>Example 2:</strong> She is sitting <strong>next to</strong> me. (She is beside me in the seat.)</li>
+		<li><strong>Example 3:</strong> The restaurant is <strong>next to</strong> the cinema. (The two places are beside each other.)</li>
+	</ul>
+
+	<h2>6. <strong>In front of</strong></h2>
+	<p><strong>In front of</strong> describes a position where something is facing another object or person, typically at the front of something.</p>
+	<ul>
+		<li><strong>Example 1:</strong> The car is <strong>in front of</strong> the house. (The car is positioned outside, in front of the house.)</li>
+		<li><strong>Example 2:</strong> The teacher is standing <strong>in front of</strong> the class. (The teacher is facing the students.)</li>
+		<li><strong>Example 3:</strong> There’s a tree <strong>in front of</strong> the building. (The tree is located at the front of the building.)</li>
+	</ul>
+
+	<h2>7. <strong>Behind</strong></h2>
+	<p><strong>Behind</strong> indicates that something is located at the back of another object, often out of sight.</p>
+	<ul>
+		<li><strong>Example 1:</strong> The dog is <strong>behind</strong> the tree. (The dog is on the opposite side of the tree.)</li>
+		<li><strong>Example 2:</strong> There’s a garage <strong>behind</strong> the house. (The garage is located at the back of the house.)</li>
+		<li><strong>Example 3:</strong> The children are <strong>behind</strong> the fence. (The children are on the other side of the fence.)</li>
+	</ul>
+
+	<h2>8. <strong>Between</strong></h2>
+	<p><strong>Between</strong> is used when something is in the middle of two other things, often referring to a space or position.</p>
+	<ul>
+		<li><strong>Example 1:</strong> The park is <strong>between</strong> the two stores. (The park is located in the middle of the two stores.)</li>
+		<li><strong>Example 2:</strong> The chair is <strong>between</strong> the table and the sofa. (The chair is located in the space between the two objects.)</li>
+		<li><strong>Example 3:</strong> The bridge is <strong>between</strong> the two mountains. (The bridge is in the gap between the two mountains.)</li>
+	</ul>
+
+	<p>Understanding prepositions of place helps us describe the world around us clearly. It enables us to communicate how objects or people are positioned in relation to each other, whether they are inside, outside, on top, below, beside, or around something else. Now, let’s practice using these prepositions in different exercises!</p>
+</div>
+
+			<!-- Section 3: Exercise - Matching -->
+<div class="text-container" id="section3">
+    <h1>Preposition Matching Exercise</h1>
+    <p>Match each preposition of place with the correct image. Drag the preposition from the list and drop it onto the correct image representing the position. Try to match all the prepositions correctly!</p>
+    
+    <div class="game-board">
+        <div class="flashcard" draggable="true" ondragstart="drag(event)" id="in">
+            <p><strong>In</strong></p>
+        </div>
+        <div class="flashcard" draggable="true" ondragstart="drag(event)" id="on">
+            <p><strong>On</strong></p>
+        </div>
+        <div class="flashcard" draggable="true" ondragstart="drag(event)" id="under">
+            <p><strong>Under</strong></p>
+        </div>
+
+        <div class="image-container">
+            <div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)" id="image1">
+                <img src="images/image1.png" alt="A cat under a chair" class="exercise-image">
+                <p>Image 1: A cat under a chair</p>
+            </div>
+            <div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)" id="image2">
+                <img src="images/image2.png" alt="A cup on a table" class="exercise-image">
+                <p>Image 2: A cup on a table</p>
+            </div>
+            <div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)" id="image3">
+                <img src="images/image3.png" alt="A book in a box" class="exercise-image">
+                <p>Image 3: A book in a box</p>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" onclick="checkMatching()">Check Answers</button>
+
+    <script>
+        // Drag-and-Drop logic
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const targetZone = ev.target;
+
+            // Avoid overwriting an already dropped preposition
+            if (!targetZone.innerText) {
+                targetZone.innerText = `${data} ✓`;
+                targetZone.style.backgroundColor = "#d4edda";
+            }
+        }
+
+        // Check answers function
+        function checkMatching() {
+            const answers = {
+                "in": "image3",
+                "on": "image2",
+                "under": "image1"
+            };
+
+            let feedback = "";
+            for (let preposition in answers) {
+                const dropzone = document.getElementById(answers[preposition]);
+                if (dropzone.innerText.includes(preposition)) {
+                    feedback += `Correct! ${preposition.charAt(0).toUpperCase() + preposition.slice(1)} is correctly matched.<br>`;
+                } else {
+                    feedback += `Incorrect. Please try again with ${preposition.charAt(0).toUpperCase() + preposition.slice(1)}.<br>`;
+                    dropzone.style.backgroundColor = "#f8d7da";
+                }
+            }
+
+            document.getElementById('feedback').innerHTML = feedback;
+        }
+    </script>
+    <div id="feedback"></div>
+</div>
+
+			<!-- Section 4: Exercise - Multiple Choice -->
+<div class="text-container" id="section4">
+    <h1>Multiple Choice Exercise</h1>
+    <p>Choose the correct preposition of place for each image. Select the most appropriate preposition based on the position shown in each image.</p>
+
+    <!-- Question 1 -->
+    <div class="question-container">
+        <p><strong>1. Where is the dog?</strong></p>
+        <div class="question-content">
+            <img src="images/dog-position.png" alt="Dog in position" class="question-image">
+            <div class="options">
+                <label><input type="radio" name="question1" value="in" /> in</label>
+                <label><input type="radio" name="question1" value="on" /> on</label>
+                <label><input type="radio" name="question1" value="under" /> under</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="question-container">
+        <p><strong>2. Where is the book?</strong></p>
+        <div class="question-content">
+            <img src="images/book-position.png" alt="Book in position" class="question-image">
+            <div class="options">
+                <label><input type="radio" name="question2" value="in" /> in</label>
+                <label><input type="radio" name="question2" value="at" /> at</label>
+                <label><input type="radio" name="question2" value="next to" /> next to</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- More questions can be added here -->
+    <button type="button" onclick="checkAnswers()">Submit</button>
+
+    <!-- Feedback Section -->
+    <div id="feedback"></div>
+
+    <script>
+        function checkAnswers() {
+            const answers = {
+                "question1": "under",  // Correct answer for question 1
+                "question2": "in"      // Correct answer for question 2
+            };
+
+            let feedback = '';
+            let correctAnswers = 0;
+
+            // Check answer for question 1
+            const answer1 = document.querySelector('input[name="question1"]:checked');
+            if (answer1 && answer1.value === answers["question1"]) {
+                correctAnswers++;
+                feedback += "Question 1: Correct!<br>";
+            } else {
+                feedback += "Question 1: Incorrect. The correct answer is 'under'.<br>";
+            }
+
+            // Check answer for question 2
+            const answer2 = document.querySelector('input[name="question2"]:checked');
+            if (answer2 && answer2.value === answers["question2"]) {
+                correctAnswers++;
+                feedback += "Question 2: Correct!<br>";
+            } else {
+                feedback += "Question 2: Incorrect. The correct answer is 'in'.<br>";
+            }
+
+            // Additional questions can be added here and checked similarly.
+
+            // Display overall feedback
+            feedback += `<br>Total Correct Answers: ${correctAnswers}`;
+            document.getElementById("feedback").innerHTML = feedback;
+        }
+    </script>
+
+   
+</div>
+
+			<!-- Section 5: Sentence Completion -->
+			<div class="text-container" id="section5">
+				<h1>Sentence Completion</h1>
+				<p>Fill in the blank with the correct preposition of place:</p>
+				<form id="sentenceForm">
+					<div class="cloze-row">
+						1. The cat is ___ the table. <input type="text" class="cloze-input" id="input1">
+					</div>
+					<div class="cloze-row">
+						2. The keys are ___ the drawer. <input type="text" class="cloze-input" id="input2">
+					</div>
+					<div class="cloze-row">
+						3. She is sitting ___ the chair. <input type="text" class="cloze-input" id="input3">
+					</div>
+					<button type="button" onclick="checkClozeAnswers()">Check Answers</button>
+				</form>
+				<div id="feedback"></div>
+				<script>
+					function checkClozeAnswers() {
+						const answers = ["on", "in", "on"];
+						let userAnswers = [];
+						for (let i = 1; i <= 3; i++) {
+							userAnswers.push(document.getElementById('input' + i).value.trim());
+						}
+						let feedback = "";
+						for (let i = 0; i < answers.length; i++) {
+							const inputElement = document.getElementById('input' + (i + 1));
+							if (userAnswers[i].toLowerCase() === answers[i]) {
+								feedback += `Sentence ${i + 1}: Correct!<br>`;
+								inputElement.style.backgroundColor = "lightgreen";
+							} else {
+								feedback += `Sentence ${i + 1}: Incorrect. The correct answer is "<strong>${answers[i]}</strong>".<br>`;
+								inputElement.style.backgroundColor = "lightcoral";
+							}
+						}
+						document.getElementById('feedback').innerHTML = feedback;
+					}
+				</script>
+			</div>
+
+			<!-- Section 6: Image Description -->
+			<div class="text-container" id="section6">
+				<h1>Image Description</h1>
+				<p>Look at the image below and describe the positions of the objects or people using prepositions of place.</p>
+				<!-- Add an image here for the students to describe -->
+				<img src="image_url_here" alt="Image to describe" width="400">
+				<textarea rows="4" cols="50" placeholder="Write your description here..."></textarea>
+			</div>
+
+			<!-- Section 7: Map Creation -->
+			<div class="text-container" id="section7">
+				<h1>Map Creation</h1>
+				<p>Create a map of your house or neighborhood. Then, describe the positions of different objects or places using prepositions of place.</p>
+				<!-- Students can upload their map here or use a tool -->
+				<textarea rows="4" cols="50" placeholder="Write your description of the map here..."></textarea>
+			</div>
+
+			
+		
+
+
+	<!-- Progress Bar -->
+			<div class="progress-bar">
+				<div class="progress" id="progress"></div>
+			</div>
+		</div>
+		
+
+	<div class="scroll-arrows-lesson-desktop">
+			<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+			<button id="readAloud" onclick="readCurrentSection()">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="stopReading" onclick="stopReading()"
+				style="background-color: red; display: none;">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+		</div>
+	</div>
+
+	<script th:src="@{/js/lesson.js}"></script>
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+
+</html>

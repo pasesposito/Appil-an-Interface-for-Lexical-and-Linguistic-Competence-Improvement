@@ -1,0 +1,504 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Appìl - Game of goose</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <style>
+        .Content {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            justify-content: center;
+        }
+
+        .text-container {
+            max-width: 800px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .game-container {
+            display: flex;
+            text-align: center;
+            gap: 20px; /* Space between the board and controls */
+            flex-direction: column; /* Stack items vertically for smaller screens */
+        }
+
+        .board {
+            width: 70vw; /* Adjusted for desktop */
+            height: auto; /* Allow height to adjust based on content */
+            aspect-ratio: 1; /* Maintain a square aspect ratio */
+            display: grid;
+            grid-template-columns: repeat(10, 1fr); /* Flexible grid */
+            grid-template-rows: repeat(10, 1fr); /* Flexible grid */
+            gap: 2px;
+            margin-bottom: 20px;
+            background-color: #ccc;
+            position: relative;
+        }
+
+        .board div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #E5F2FF;
+        }
+
+        .board div:nth-child(odd) {
+            background-color: #E5F2FF;
+        }
+
+        .player {
+            width: 40px;
+            height: 40px;
+            background-image: url('fontawesome-free-6.6.0-web/svgs/regular/user.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px;
+            width: 100%; /* Full width for controls */
+        }
+
+        input {
+            padding: 12px; /* Increased padding */
+            font-size: 18px; /* Larger font size */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+            width: calc(100% - 24px); /* Full width minus padding */
+        }
+
+               #diceResult,
+        #status {
+            margin-top: 10px;
+            font-size: 20px; /* Increased font size */
+            font-weight: bold;
+        }
+
+        #question {
+            font-size: 20px; /* Increased font size */
+            margin-top: 20px;
+        }
+
+        #dice {
+            cursor: pointer;
+        }
+
+        #diceFace {
+            width: 10vw; /* Responsive width */
+            height: 10vw; /* Keep it square */
+            max-width: 50px; /* Set a maximum size */
+            max-height: 50px;
+            transition: transform 0.4s;
+        }
+
+        #dice.rolling #diceFace {
+            animation: diceRoll 0.5s;
+        }
+
+        @keyframes diceRoll {
+            0% {
+                transform: rotateX(0) rotateY(0);
+            }
+            50% {
+                transform: rotateX(1800deg) rotateY(1800deg);
+            }
+            100% {
+                transform: rotateX(3600deg) rotateY(3600deg);
+            }
+        }
+
+        #status {
+            margin: 0;
+            padding: 0;
+            font-size: 1em;
+            line-height: 50px;
+            color: green;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 100%;
+            white-space: normal; /* Allow text to wrap */
+            word-wrap: break-word; /* Break long words if necessary */
+        }
+
+        /* Media query for screens 768px wide or smaller */
+        @media (max-width: 768px) {
+            .Content {
+                margin-top: 20px;
+            }
+
+            .game-container {
+                flex-direction: column; /* Stack items vertically */
+                align-items: center; /* Center items horizontally */
+                gap: 20px; /* Space between stacked elements */
+            }
+
+            .controls {
+                margin: 20px 0; /* Add space above and below the controls */
+            }
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/css/quiz.css}">
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+    <button id="showInstructions">?</button>
+
+    <!-- Instruction Modal -->
+    <div id="instructionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Instructions</h2>
+
+            <h1> Game of the Goose</h1>
+            <p>Get ready for an exciting board game that tests your
+                knowledge of the verb "to have" and "to do"! The Game of the Goose is a classic
+                game where you move around the board by rolling dice, but with a
+                twist—each space has a question or sentence to complete using the
+                correct form of "to have" or "to do." It’s a great way to practice while
+                having fun.</p>
+            <p>Here’s how it works:</p>
+            <ul>
+                <li>Roll the dice and move your piece the corresponding number
+                    of spaces on the board.</li>
+                <li>When you land on a space, you’ll see a sentence with a
+                    blank. Your task is to fill in the blank with the correct form of
+                    "to have" or "to do."</li>
+                <li>If you answer correctly, you stay on that space. If not,
+                    you move back one space.</li>
+                <li>The first player to reach the end of the board wins!</li>
+            </ul>
+            <p>
+                <strong>Example:</strong> You land on a space with the sentence
+                "They ____ three cats." Your answer should be "have." If correct,
+                you remain on that space and wait for your next turn.
+            </p>
+            <p>This game is a fun way to reinforce what you’ve learned about
+                "to have" and "to do," as well as to improve your quick thinking and
+                decision-making skills.</p>
+
+        </div>
+    </div>
+
+    <div class="Content">
+
+        <div class="choice" style="display: flex; align-items: center; margin: 20px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9;">
+            <p style="margin-right: 10px; font-weight: bold;">Choose what to practice:</p>
+            <select id="gameVersion" style="padding: 5px; border: 1px solid AliceBlue; border-radius: 4px; background-color: #fff; cursor: pointer;">
+                <option value="have">Have</option>
+                <option value="do">Do</option>
+            </select>
+        </div>
+
+        <div class="game-container">
+            <div class="board-container">
+                <div class="board" id="board"></div>
+            </div>
+            <div>
+                <div class="controls">
+                    <div id="dice" onclick="rollDice()">
+                        <img id="diceFace" src="/fontawesome-free-6.6.0-web/svgs/solid/dice-one.svg" alt="Dice Face">
+                    </div>
+                    <p id="diceResult">Roll the dice to start!</p>
+                    <p id="question"></p>
+                    <input type="text" id="answerInput" placeholder="Your answer here">
+                    <button id="submitAnswer">Submit Answer</button>
+
+                    <p id="status"></p>
+
+                    <p id="moveCount">Moves: 0</p>
+                    <p id="points">Points: 0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+    <script th:src="@{/js/gameofgoose.js}"></script>
+    <script th:src="@{/js/quizfunctions.js}"></script>
+    <script>
+        // JavaScript to handle modal display for instructions
+        const instructionModal = document.getElementById("instructionModal");
+        const closeModal = document.getElementsByClassName("close")[0];
+        const showInstructionsButton = document.getElementById("showInstructions");
+
+        showInstructionsButton.onclick = function () {
+            instructionModal.style.display = "block";
+        }
+
+        closeModal.onclick = function () {
+            instructionModal.style.display = "none";
+        }
+
+        window.onclick = function (event) {
+            if (event.target == instructionModal) {
+                instructionModal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+<!--  
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Appìl - Memory</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <style>
+      .Content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    justify-content: center;
+}
+
+.text-container {
+    max-width: 800px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.game-container {
+    display: flex;
+    text-align: center;
+    gap: 20px; /* Space between the board and controls */
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(10, 50px);
+    grid-template-rows: repeat(10, 50px);
+    gap: 2px;
+    margin-bottom: 20px;
+    background-color: #ccc;
+    position: relative;
+}
+
+.board div {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #E5F2FF;
+}
+
+.board div:nth-child(odd) {
+    background-color: #E5F2FF;
+}
+
+.player {
+    width: 40px;
+    height: 40px;
+    background-image: url('fontawesome-free-6.6.0-web/svgs/solid/motorcycle.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 30px;
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 10px;
+}
+
+#diceResult,
+#status {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#question {
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+#dice {
+    cursor: pointer;
+}
+
+#diceFace {
+    width: 50px;
+    height: 50px;
+    transition: transform 0.4s;
+}
+
+#dice.rolling #diceFace {
+    animation: diceRoll 0.5s;
+}
+
+@keyframes diceRoll {
+    0% {
+        transform: rotateX(0) rotateY(0);
+    }
+    50% {
+        transform: rotateX(1800deg) rotateY(1800deg);
+    }
+    100% {
+        transform: rotateX(3600deg) rotateY(3600deg);
+    }
+}
+
+#status {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    line-height: 50px;
+    color: green;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    white-space: normal; /* Allow text to wrap */
+    word-wrap: break-word; /* Break long words if necessary */
+}
+
+/* Media query for screens 768px wide or smaller */
+@media (max-width: 768px) {
+
+	.Content{
+	
+	margin-top: 20px
+	
+	}
+    .game-container {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items horizontally */
+        gap: 20px; /* Space between stacked elements */
+    }
+
+    .board {
+        margin-bottom: 0; /* Remove margin between board and controls */
+    }
+
+    .controls {
+        margin: 20px 0; /* Add space above and below the controls */
+    }
+}
+
+        
+    </style>
+    <link rel="stylesheet" th:href="@{/css/quiz.css}">
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+      <button id="showInstructions">?</button>
+    
+    
+    
+     <!-- Modal for Game Type Selection 
+    <div id="gameSelectionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Select the type of exercise:</h2>
+            <label>
+                <input type="radio" name="gameType" value="have" checked> Exercises with "to have"
+            </label>
+            <label>
+                <input type="radio" name="gameType" value="be"> Exercises with "to be"
+            </label>
+            <button id="startGame">Start Game</button>
+        </div>
+    </div> 
+
+    <div id="instructionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Instructions</h2>
+          
+				<h1> Game of the Goose</h1>
+				<p>Get ready for an exciting board game that tests your
+					knowledge of the verb "to have"! The Game of the Goose is a classic
+					game where you move around the board by rolling dice, but with a
+					twist—each space has a question or sentence to complete using the
+					correct form of "to have." It’s a great way to practice while
+					having fun.</p>
+				<p>Here’s how it works:</p>
+				<ul>
+					<li>Roll the dice and move your piece the corresponding number
+						of spaces on the board.</li>
+					<li>When you land on a space, you’ll see a sentence with a
+						blank. Your task is to fill in the blank with the correct form of
+						"to have."</li>
+					<li>If you answer correctly, you stay on that space. If not,
+						you move back one space.</li>
+					<li>The first player to reach the end of the board wins!</li>
+				</ul>
+				<p>
+					<strong>Example:</strong> You land on a space with the sentence
+					"They ____ three cats." Your answer should be "have." If correct,
+					you remain on that space and wait for your next turn.
+				</p>
+				<p>This game is a fun way to reinforce what you’ve learned about
+					"to have," as well as to improve your quick thinking and
+					decision-making skills.</p>
+					
+			</div>
+		 
+      
+    </div>
+
+    <div class="Content">
+        <div class="game-container">
+            <div class="board-container">
+                <div class="board" id="board"></div>
+            </div>
+            <div>
+                <div class="controls">
+                    <div id="dice" onclick="rollDice()">
+                        <img id="diceFace" src="/fontawesome-free-6.6.0-web/svgs/solid/dice-one.svg" alt="Dice Face">
+                    </div>
+                    <p id="diceResult">Roll the dice to start!</p>
+                    <p id="question"></p>
+                    <input type="text" id="answerInput" placeholder="Your answer here">
+                    <button id="submitAnswer">Submit Answer</button>
+                    
+                    <p id="status"></p>
+                   
+                    <p id="moveCount">Moves: 0</p>
+                    <p id="points">Points: 0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+    <script th:src="@{/js/gameofgoose.js}"></script>
+    <script th:src="@{/js/quizfunctions.js}"></script>
+</body>
+
+
+</html>
+--->

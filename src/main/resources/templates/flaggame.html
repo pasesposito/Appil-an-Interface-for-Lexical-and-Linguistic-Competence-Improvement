@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag Country Game</title>
+    <!-- Thymeleaf includes for additional head content -->
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <style>
+        .Content {
+            align-content: center;
+        }
+        /* Optional: Add your CSS styles here */
+        #game-container {
+            text-align: center;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #flag-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+        .option-btn:hover {
+            background-color: #45a049;
+        }
+        #feedback {
+    position: fixed; /* Make it fixed to cover the entire screen */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center it both horizontally and vertically */
+    padding: 20px 40px;
+    font-size: 24px; /* Increase font size for better visibility */
+    background-color: #b2f2b0;
+    color: black;
+    font-weight: bold;
+    border-radius: 8px;
+    display: none; /* Initially hidden */
+    z-index: 9999; /* Ensure it appears above everything */
+    opacity: 1;
+    transition: opacity 0.5s ease-out; /* Smooth fade effect */
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    100% { opacity: 0; display: none; }
+}
+
+        /* Styles for the instruction modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 768px;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" th:href="@{/css/quiz.css}">
+</head>
+<body>
+    <!-- Thymeleaf includes for header and other components -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+      <button id="showInstructions">?</button>
+
+    <!-- Instruction Modal -->
+    <div id="instructionModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Instructions</h2>
+            <p>Welcome to the Flag Country Association Game!</p>
+            <p>In this game, you will see a flag image and a set of country names. Your task is to click on the correct country that corresponds to the displayed flag.</p>
+            <p>Click on the "Next" button to move to the next flag and set of options.</p>
+            <p>Good luck!</p>
+        </div>
+    </div>
+
+    <div class="Content">
+        <div id="game-container">
+            <h1>Flag Country Association Game</h1>
+            <div id="score-display"></div>
+            <div id="flag-container">
+                <img id="flag-img" th:src="@{/images/default-flag.png}" alt="Flag"> <!-- Replace with dynamic image source -->
+            </div>
+            <div id="options-container">
+                <!-- Options will be added dynamically via JavaScript -->
+            </div>
+            <div id="feedback"></div>
+            <button id="next-btn" style="background-color:#b2f2b0">Next</button>
+        </div>
+    </div>
+
+    <script th:src="@{/js/countriesgame.js}"></script>
+    <script th:src="@{/js/quizfunctions.js}"></script>
+
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+ 
+</body>
+</html>

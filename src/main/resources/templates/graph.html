@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafo delle Relazioni con Three.js</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(15, 15, 15);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        const jsonData = {
+
+        		links: [
+
+        		{ relation: "of siege is", source: "Baghdad", target: "historic capital" },
+
+        		{ relation: "was sacked by", source: "Baghdad", target: "Mongol army" },
+
+        		{ relation: "fell Within", source: "Baghdad", target: "few weeks" },
+
+        		{ relation: "took place in", source: "siege", target: "early 1258" },
+
+        		{ relation: "capital of", source: "siege", target: "Abbasid Caliphate" }
+
+        		],
+
+        		nodes: [
+
+        		{ id: "Baghdad" },
+
+        		{ id: "historic capital" },
+
+        		{ id: "Mongol army" },
+
+        		{ id: "few weeks" },
+
+        		{ id: "siege" },
+
+        		{ id: "early 1258" },
+
+        		{ id: "Abbasid Caliphate" }
+
+        		]
+
+        		}; 
+
+        const nodeMap = {};
+        let font;
+
+        const loader = new THREE.FontLoader();
+        loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (loadedFont) => {
+            font = loadedFont;
+            createGraph();
+            animate();
+        });
+
+        function createGraph() {
+            const positions = distributeNodes(jsonData.nodes.length, 5);
+
+            jsonData.nodes.forEach((node, index) => {
+                createNode(node.id, positions[index]);
+                createNodeLabel(node.id);
+            });
+
+            jsonData.links.forEach(link => {
+                createLink(link.source, link.target);
+                createRelationLabel(link.relation, link.source, link.target);
+            });
+        }
+
+        function distributeNodes(count, radius) {
+            const positions = [];
+            const angleStep = (Math.PI * 2) / count;
+
+            for (let i = 0; i < count; i++) {
+                const angle = angleStep * i;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                const z = (Math.random() - 0.5) * radius * 2;
+                positions.push(new THREE.Vector3(x, y, z));
+            }
+            return positions;
+        }
+
+        function createNode(id, position) {
+            const geometry = new THREE.SphereGeometry(0.3);
+            const material = new THREE.MeshPhongMaterial({
+                color: 0xF0F8FF, // Codice esadecimale per Alice Blue
+                shininess: 30,
+                specular: 0x444444
+            });
+            const shape = new THREE.Mesh(geometry, material);
+            shape.position.copy(position);
+            nodeMap[id] = shape;
+            scene.add(shape);
+        }
+
+        function createLink(sourceNode, targetNode) {
+            const geometry = new THREE.BufferGeometry().setFromPoints([
+                nodeMap[sourceNode].position,
+                nodeMap[targetNode].position
+            ]);
+            const material = new THREE.LineBasicMaterial({ 
+                color: 0x87CEFA,
+                linewidth: 3 // Aumenta questo valore per rendere le linee più spesse
+            });
+            const line = new THREE.Line(geometry, material);
+            scene.add(line);
+        }
+
+        function createNodeLabel(id) {
+            const geometry = new THREE.TextGeometry(id, { font, size: 1, height: 0.1 });
+            const material = new THREE.MeshBasicMaterial({ color: 0x2F4F4F });
+            const text = new THREE.Mesh(geometry, material);
+            text.position.set(nodeMap[id].position.x - 0.5, nodeMap[id].position.y + 0.5, nodeMap[id].position.z);
+            scene.add(text);
+        }
+
+        function createRelationLabel(relation, sourceNode, targetNode) {
+            const middle = new THREE.Vector3().addVectors(nodeMap[sourceNode].position, nodeMap[targetNode].position).multiplyScalar(0.5);
+            const geometry = new THREE.TextGeometry(relation, { font, size: 0.5, height: 0.05 });
+            const material = new THREE.MeshBasicMaterial({ color: 0x2F4F4F });
+            const text = new THREE.Mesh(geometry, material);
+            text.position.set(middle.x, middle.y, middle.z + 0.5);
+            scene.add(text);
+        }
+
+        // Add lighting
+        const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(5, 5, 5);
+        directionalLight.castShadow = true; // Enable shadows
+        scene.add(directionalLight);
+
+        renderer.shadowMap.enabled = true; // Enable shadow mapping in the renderer
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            for (const node in nodeMap) {
+                nodeMap[node].rotation.y += 0.01; // Rotate around Y-axis
+            }
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('click', (event) => {
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children);
+
+            if (intersects.length > 0) {
+                intersects[0].object.material.color.set(Math.random() * 0xffffff);
+            }
+        });
+    </script>
+</body>
+</html>

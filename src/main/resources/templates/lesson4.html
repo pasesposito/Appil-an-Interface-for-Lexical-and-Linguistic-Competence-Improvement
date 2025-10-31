@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head>
+
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+
+
+<meta charset="UTF-8">
+<title>Lesson FOUR</title>
+<style>
+.cloze-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.cloze-row span {
+	margin: 0 5px;
+}
+
+.cloze-input {
+	width: 100px;
+	padding: 5px;
+	font-size: 1em;
+	margin: 0 5px;
+}
+
+#loading {
+	display: none;
+	font-size: 18px;
+	color: #007BFF;
+	margin: 20px 0;
+}
+
+.result-item {
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.result-item:hover {
+	background-color: #f0f0f0;
+}
+
+.Content {
+	margin: 2%;
+}
+
+@media ( max-width : 768px) {
+	.wrapping {
+		flex-direction: column;
+	}
+	.Content {
+		width: 90%;
+		max-width: 100%;
+	}
+}
+
+#feedback {
+	margin-top: 20px;
+	font-weight: bold;
+}
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
+}
+
+.flashcard {
+	width: 100px;
+	height: 50px;
+	background-color: #f2f2f2;
+	border: 1px solid #ddd;
+	margin: 5px;
+	text-align: center;
+	line-height: 50px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.flashcard.dragging {
+	opacity: 0.5;
+}
+
+.dropzone {
+	width: 120px;
+	height: 60px;
+	border: 2px dashed #ccc;
+	margin: 10px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	line-height: 60px;
+}
+
+.dropzone.over {
+	background-color: #e6ffe6;
+	border-color: #66ff66;
+}
+
+.flashcards-container, .dropzones-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    gap: 10px;
+    margin: 0 auto;
+    max-width: 450px;
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    background-color: #ddd;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.card.flipped {
+    background-color: #fff;
+}
+
+.card.matched {
+    background-color: #4caf50;
+    color: #fff;
+}
+</style>
+
+<link rel="stylesheet" th:href="@{/css/lessons.css}"
+ />
+
+</head>
+<body>
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+	<div class="wrapping">
+	
+	<div class="sidebar-lessons">
+			<div id="section-list">
+				<!-- Section names will be dynamically added here -->
+			</div>
+		</div>
+		<div class="Content">
+		
+		
+
+			<!-- Section 1: Introduction -->
+			<div class="text-container active" id="section1">
+				<h1>Lesson 4: The Verb "To Have"</h1>
+				<p>Welcome to the fourth lesson! In this lesson, we will focus
+					on the verb "to have" in the present tense. This verb is crucial
+					for expressing possession, relationships, and experiences in
+					English. Along with learning the verb, we'll expand our vocabulary
+					with words and phrases related to free time activities, love
+					stories, and musical genres and instruments. By the end of this
+					lesson, you’ll be able to use "to have" confidently in various
+					contexts and describe your interests and experiences more fluently.
+					Let's dive in!</p>
+			</div>
+
+			<!-- Section 2: Main Objectives -->
+			<div class="text-container" id="section2">
+				<h1>Main Objectives</h1>
+				<p>By the end of this lesson, you should be able to:</p>
+				<ul>
+					<li>Correctly use the verb "to have" in the present tense in
+						both affirmative, negative, and interrogative sentences.</li>
+					<li>Expand your vocabulary to include terms related to:
+						<ul>
+							<li><strong>Free time activities:</strong> Learn how to talk
+								about things you enjoy doing, such as watching TV, reading
+								books, or playing sports.</li>
+							<li><strong>Love stories:</strong> Understand and use
+								phrases that describe romantic relationships, like "fall in
+								love," "get married," or "have a date."</li>
+							<li><strong>Musical genres and instruments:</strong> Discuss
+								your musical interests by naming different genres and
+								instruments, such as "jazz," "rock," or "guitar."</li>
+						</ul>
+					</li>
+				</ul>
+				<p>This lesson mirrors the structure of the lesson on the verb
+					"to be," blending direct instruction with guided practice and
+					opportunities for independent application. We will use a variety of
+					contextualized examples and engaging activities, including games
+					and interactive exercises, to help you master the verb "to have" in
+					a fun and natural way.</p>
+			</div>
+
+			<!-- Section 3: Understanding the Verb "To Have" -->
+			<div class="text-container" id="section3">
+				<h1>Understanding the Verb "To Have"</h1>
+				<p>The verb "to have" is one of the most versatile and
+					frequently used verbs in English. It is essential for indicating
+					possession (e.g., "I have a car"), describing relationships (e.g.,
+					"She has a brother"), and discussing experiences (e.g., "They have
+					been to Paris"). In the present tense, "to have" appears in two
+					forms:</p>
+				<ul>
+					<li><strong>"Have":</strong> Used with the subjects I, you,
+						we, they.
+						<ul>
+							<li><strong>Example:</strong> "I have a meeting tomorrow."</li>
+							<li><strong>Example:</strong> "They have a new house."</li>
+						</ul></li>
+					<li><strong>"Has":</strong> Used with the subjects he, she,
+						it.
+						<ul>
+							<li><strong>Example:</strong> "She has a beautiful voice."</li>
+							<li><strong>Example:</strong> "It has a unique design."</li>
+						</ul></li>
+				</ul>
+				<p>Let’s break down its use in different sentence structures:</p>
+				<ul>
+					<li><strong>Affirmative Sentences:</strong> These sentences
+						state something that is true.
+						<ul>
+							<li><strong>Example:</strong> "I have a book." / "She has a
+								beautiful voice."</li>
+						</ul></li>
+					<li><strong>Negative Sentences:</strong> These sentences
+						express something that is not true. We use "do not" (don’t) or
+						"does not" (doesn’t) to form negatives.
+						<ul>
+							<li><strong>Example:</strong> "They do not (don’t) have any
+								pets." / "He does not (doesn’t) have a car."</li>
+						</ul></li>
+					<li><strong>Interrogative Sentences:</strong> These sentences
+						ask a question. We use "do" or "does" to begin the question.
+						<ul>
+							<li><strong>Example:</strong> "Do you have any questions?" /
+								"Does she have a guitar?"</li>
+						</ul></li>
+				</ul>
+				<p>Understanding these forms and how they are used in different
+					types of sentences will help you communicate more effectively in
+					English. Now, let's practice using "to have" with some interactive
+					exercises.</p>
+			</div>
+
+			<!-- Section 4: Interactive Cloze Exercise -->
+			<div class="text-container" id="section4">
+				<h1>Interactive Cloze Exercise</h1>
+				<p>Now that you understand the basics of the verb "to have,"
+					it’s time to practice! In this exercise, you will complete
+					sentences by filling in the blanks with the correct form of "to
+					have" (either "have" or "has"). This will help you reinforce your
+					understanding of how the verb is used in context.</p>
+
+				<h3>Cloze Exercise: The Verb "To Have"</h3>
+				<p>Fill in the blanks with the correct form of the verb "to
+					have" (have/has):</p>
+
+				<form id="clozeForm">
+					<div class="cloze-row">
+						<span>1. They</span> <input type="text" class="cloze-input"
+							id="input1"> <span>a new puppy.</span>
+					</div>
+					<div class="cloze-row">
+						<span>2. She</span> <input type="text" class="cloze-input"
+							id="input2"> <span>many friends at school.</span>
+					</div>
+					<div class="cloze-row">
+						<span>3. Do you</span> <input type="text" class="cloze-input"
+							id="input3"> <span>any free time this weekend?</span>
+					</div>
+					<div class="cloze-row">
+						<span>4. He</span> <input type="text" class="cloze-input"
+							id="input4"> <span>a large collection of vinyl
+							records.</span>
+					</div>
+					<div class="cloze-row">
+						<span>5. I</span> <input type="text" class="cloze-input"
+							id="input5"> <span>an interesting love story to
+							share.</span>
+					</div>
+					<button type="button" onclick="checkAnswers()">Check
+						Answers</button>
+				</form>
+
+
+				<div id="feedback"></div>
+
+				<script>
+					function checkClozeAnswers() {
+						// Correct answers
+						const answers = [ "have", "has", "have", "has", "have" ];
+
+						// Getting the user inputs
+						let userAnswers = [];
+						for (let i = 1; i <= 5; i++) {
+							userAnswers.push(document.getElementById('input'
+									+ i).value.trim().toLowerCase());
+						}
+
+						// Checking the answers and providing feedback
+						let feedback = "";
+						for (let i = 0; i < answers.length; i++) {
+							const inputElement = document
+									.getElementById('input' + (i + 1));
+							if (userAnswers[i] === answers[i]) {
+								feedback += `Sentence ${i + 1}: <span class="correct">Correct</span><br>`;
+								inputElement.style.backgroundColor = "lightgreen";
+							} else {
+								feedback += `Sentence ${i + 1}: <span class="incorrect">Incorrect</span> (Correct answer: "${answers[i]}")<br>`;
+								inputElement.style.backgroundColor = "lightcoral";
+							}
+						}
+
+						// Display feedback
+						document.getElementById('feedback').innerHTML = feedback;
+					}
+				</script>
+			</div>
+
+			<!-- Section 5: Interactive Flashcards -->
+			<div class="text-container" id="section5">
+				<h1>Interactive Flashcards</h1>
+				<p>Now that you’ve practiced using "to have" in sentences, let’s
+					reinforce your learning with a fun matching activity. You will use
+					flashcards to match subjects with the correct form of the verb "to
+					have" and related vocabulary. This will help you solidify your
+					understanding of how "to have" is used with different subjects.</p>
+				<p>Instructions: Look at each flashcard and try to match the
+					subject (e.g., "He") with the correct verb form (e.g., "Has") and a
+					relevant vocabulary term (e.g., "A piano"). Try to complete the
+					matches mentally before checking your answers.</p>
+
+				<div class="game-board" id="game-board"></div>
+				
+				<a th:href="@{verbmatchinggame}"
+ target="_blank"> Go to the game...</a>
+
+
+			</div>
+
+
+
+		
+
+			<!-- Section 6: Game - "Guess Who?" 
+			<div class="text-container" id="section6">
+				<h1>Game: "Guess Who?"</h1>
+				<p>In this fun and interactive game, you'll describe someone
+					using sentences with the verb "to have," and your partner will try
+					to guess who you're describing. This is an excellent way to
+					practice using "to have" in a social context, while also developing
+					your descriptive language skills.</p>
+				<p>Here’s how to play:</p>
+				<ul>
+					<li>Think of a person you know (a friend, family member, or
+						even a celebrity).</li>
+					<li>Describe them using sentences with "to have." For example,
+						"She has long brown hair and a friendly smile."</li>
+					<li>Your partner will listen to your description and try to
+						guess who you’re talking about.</li>
+					<li>Take turns with your partner, giving descriptions and
+						making guesses.</li>
+				</ul>
+				<p>Try to use as many descriptive phrases as you can. This game
+					not only helps with your verb usage but also encourages creative
+					thinking and improves your ability to describe people accurately.</p>
+			</div>
+
+			 Section 7: Game - Game of the Goose -->
+			 
+			<div class="text-container" id="section6">
+				<h1>Game: Game of the Goose</h1>
+				<p>Get ready for an exciting board game that tests your
+					knowledge of the verb "to have"! The Game of the Goose is a classic
+					game where you move around the board by rolling dice, but with a
+					twist—each space has a question or sentence to complete using the
+					correct form of "to have." It’s a great way to practice while
+					having fun.</p>
+				<p>Here’s how it works:</p>
+				<ul>
+					<li>Roll the dice and move your piece the corresponding number
+						of spaces on the board.</li>
+					<li>When you land on a space, you’ll see a sentence with a
+						blank. Your task is to fill in the blank with the correct form of
+						"to have."</li>
+					<li>If you answer correctly, you stay on that space. If not,
+						you move back one space.</li>
+					<li>The first player to reach the end of the board wins!</li>
+				</ul>
+				<p>
+					<strong>Example:</strong> You land on a space with the sentence
+					"They ____ three cats." Your answer should be "have." If correct,
+					you remain on that space and wait for your next turn.
+				</p>
+				<p>This game is a fun way to reinforce what you’ve learned about
+					"to have," as well as to improve your quick thinking and
+					decision-making skills.</p>
+			</div>
+
+			
+
+
+	
+			
+			<!-- Section 8: Lesson Summary -->
+			<div class="text-container" id="section9">
+				<h1>Lesson Summary</h1>
+				<p>Congratulations on completing Lesson 4! In this lesson, we
+					focused on the verb "to have" in the present tense, learning how to
+					use it to express possession, relationships, and experiences. We
+					also expanded our vocabulary with words and phrases related to free
+					time activities, love stories, musical genres, and instruments.</p>
+				<p>Through interactive exercises and games, you practiced using
+					"to have" in different contexts, helping to solidify your
+					understanding and fluency. Remember, the key to mastering a new
+					language is consistent practice, so continue using these concepts
+					in your daily conversations and activities.</p>
+				<p>Keep up the great work, and see you in the next lesson!</p>
+			</div>
+
+
+			<!-- Progress Bar -->
+			<div class="progress-bar">
+				<div class="progress" id="progress"></div>
+			</div>
+
+		</div>
+
+
+
+		
+
+
+
+		<div class="scroll-arrows-lesson-desktop">
+			<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+			<button id="readAloud" onclick="readCurrentSection()">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="stopReading" onclick="stopReading()"
+				style="background-color: red; display: none;">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+		</div>
+	</div>
+
+
+
+
+	<div class="scroll-arrows-lesson-mobile">
+		<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+		<button id="readAloud" onclick="readCurrentSection()">
+			<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+				style="width: 24px; height: 24px;">
+		</button>
+		<button id="stopReading" onclick="stopReading()"
+			style="background-color: red; display: none;">
+			<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+				style="width: 24px; height: 24px;">
+		</button>
+		<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+	</div>
+	
+		<div class="activities">
+		
+           
+            <a th:href="@{gameofgoose}"
+ class="grid-item tense" target="_blank">
+                <i class="fas fa-dice"></i>
+                <h3>Game of Goose</h3>
+            </a>
+
+			</div>
+
+
+
+	<script th:src="@{/js/lesson.js}"></script>
+
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+	
+</body>
+</html>

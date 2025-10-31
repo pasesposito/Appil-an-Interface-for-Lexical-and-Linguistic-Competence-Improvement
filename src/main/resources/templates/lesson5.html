@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<title>Lesson FIVE</title>
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+<style>
+.cloze-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.cloze-row span {
+	margin: 0 5px;
+}
+
+.cloze-input {
+	width: 100px;
+	padding: 5px;
+	font-size: 1em;
+	margin: 0 5px;
+}
+
+#loading {
+	display: none;
+	font-size: 18px;
+	color: #007BFF;
+	margin: 20px 0;
+}
+
+.result-item {
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.result-item:hover {
+	background-color: #f0f0f0;
+}
+
+.Content {
+	margin: 2%;
+}
+
+@media ( max-width : 768px) {
+	.wrapping {
+		flex-direction: column;
+	}
+	.Content {
+		width: 90%;
+		max-width: 100%;
+	}
+}
+
+#feedback {
+	margin-top: 20px;
+	font-weight: bold;
+}
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
+}
+
+.flashcard {
+	width: 100px;
+	height: 50px;
+	background-color: #f2f2f2;
+	border: 1px solid #ddd;
+	margin: 5px;
+	text-align: center;
+	line-height: 50px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.flashcard.dragging {
+	opacity: 0.5;
+}
+
+.dropzone {
+	width: 120px;
+	height: 60px;
+	border: 2px dashed #ccc;
+	margin: 10px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	line-height: 60px;
+}
+
+.dropzone.over {
+	background-color: #e6ffe6;
+	border-color: #66ff66;
+}
+
+.flashcards-container, .dropzones-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.game-board {
+	display: grid;
+	grid-template-columns: repeat(4, 100px);
+	gap: 10px;
+	margin: 0 auto;
+	max-width: 450px;
+}
+
+.card {
+	width: 100px;
+	height: 100px;
+	background-color: #ddd;
+	border: 1px solid #ccc;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.card.flipped {
+	background-color: #fff;
+}
+
+.card.matched {
+	background-color: #4caf50;
+	color: #fff;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<link rel="stylesheet" th:href="@{/css/lessons.css}"
+ />
+
+</head>
+<body>
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+	<div class="wrapping">
+		<div class="sidebar-lessons">
+			<div id="section-list">
+				<!-- Section names will be dynamically added here -->
+			</div>
+		</div>
+		<div class="Content">
+
+		<!-- Section 1: Introduction -->
+<div class="text-container active" id="section1">
+    <h1>Lesson FIVE: The Past Simple Tense</h1>
+    <p>Welcome to Lesson Five! In this lesson, we will focus on the Past Simple tense. We’ll learn how to form and use the Past Simple tense to talk about actions that happened in the past. We’ll also cover word formation with suffixes and prefixes, past time expressions like "yesterday" and "last week," and the past forms of common verbs like "go," "have," and "get."</p>
+    <p>Additionally, you'll learn vocabulary related to daily routines, and we'll gradually progress from learning the rules to applying them in various exercises, culminating in creative writing and personal presentations.</p>
+    <p>It’s important to understand that the Past Simple tense is often irregular and must be learned as is. Unlike regular verbs, which follow a predictable pattern (adding -ed), irregular verbs do not follow a single rule and need to be memorized individually. This is essential for accurate usage in speaking and writing.</p>
+</div>
+
+<!-- Section 2: Understanding the Past Simple Tense -->
+<div class="text-container" id="section2">
+    <h1>Understanding the Past Simple Tense</h1>
+    <p>The Past Simple tense is used to describe actions that were completed in the past. Here’s how you form it:</p>
+    <ul>
+        <li><strong>Affirmative Sentences:</strong> Use the past form of the verb. For regular verbs, add -ed to the base form (e.g., "play" becomes "played"). Irregular verbs have unique past forms (e.g., "go" becomes "went").</li>
+        <li><strong>Negative Sentences:</strong> Use "did not" (didn't) + base form of the verb. For example, "I did not (didn't) play soccer yesterday."</li>
+        <li><strong>Interrogative Sentences:</strong> Use "did" + base form of the verb. For example, "Did you play soccer yesterday?"</li>
+    </ul>
+    <h2>Regular vs. Irregular Verbs</h2>
+    <p>When forming the Past Simple tense, verbs can be classified into two categories: regular and irregular.</p>
+    <h3>Regular Verbs</h3>
+    <p>Regular verbs follow a simple pattern: you add -ed to the base form of the verb to create the past form. Here are some examples:</p>
+    <ul>
+        <li><strong>Play:</strong> "play" becomes "played" (e.g., "I played soccer yesterday.")</li>
+        <li><strong>Work:</strong> "work" becomes "worked" (e.g., "She worked late last night.")</li>
+        <li><strong>Watch:</strong> "watch" becomes "watched" (e.g., "They watched a movie last weekend.")</li>
+    </ul>
+    <h3>Irregular Verbs</h3>
+    <p>Irregular verbs do not follow a consistent pattern, so their past forms need to be memorized. Here are some common examples:</p>
+    <ul>
+        <li><strong>Go:</strong> "go" becomes "went" (e.g., "I went to the store yesterday.")</li>
+        <li><strong>Have:</strong> "have" becomes "had" (e.g., "We had dinner at 8 PM.")</li>
+        <li><strong>Get:</strong> "get" becomes "got" (e.g., "She got a new job last month.")</li>
+    </ul>
+    <h2>Word Formation: Suffixes and Prefixes</h2>
+    <p>Understanding word formation can help you expand your vocabulary. In English, we often create new words by adding suffixes or prefixes. Here are some examples:</p>
+    <ul>
+        <li><strong>Suffixes:</strong> Adding -ed to a verb forms the past tense (e.g., "talk" becomes "talked").</li>
+        <li><strong>Prefixes:</strong> Adding a prefix can change the meaning of a word (e.g., "undo" is the opposite of "do").</li>
+    </ul>
+    <h2>Past Time Expressions</h2>
+    <p>When talking about the past, we often use time expressions to indicate when something happened. Here are some common past time expressions:</p>
+    <ul>
+        <li><strong>Yesterday:</strong> "I went to the park yesterday."</li>
+        <li><strong>Last week:</strong> "She visited her grandmother last week."</li>
+        <li><strong>Two days ago:</strong> "They left for vacation two days ago."</li>
+    </ul>
+    <h2>Common Verbs in the Past Simple</h2>
+    <p>Here are the past forms of some common verbs:</p>
+    <ul>
+        <li><strong>"Go":</strong> went</li>
+        <li><strong>"Have":</strong> had</li>
+        <li><strong>"Get":</strong> got</li>
+    </ul>
+</div>
+
+<!-- Section 4: Interactive Cloze Exercise -->
+<div class="text-container" id="section4">
+    <h1>Interactive Cloze Exercise</h1>
+    <p>Complete the sentences with the correct form of the verb in the Past Simple tense:</p>
+    <form id="clozeForm">
+        <div class="cloze-row">
+            <span>1. Yesterday, I</span> <input type="text" class="cloze-input" id="input1"> <span>to the market.</span>
+        </div>
+        <div class="cloze-row">
+            <span>2. Last week, they</span> <input type="text" class="cloze-input" id="input2"> <span>a great movie.</span>
+        </div>
+        <div class="cloze-row">
+            <span>3. Two days ago, she</span> <input type="text" class="cloze-input" id="input3"> <span>a letter to her friend.</span>
+        </div>
+        <div class="cloze-row">
+            <span>4. He</span> <input type="text" class="cloze-input" id="input4"> <span>his bike last month.</span>
+        </div>
+        <div class="cloze-row">
+            <span>5. We</span> <input type="text" class="cloze-input" id="input5"> <span>a new game last weekend.</span>
+        </div>
+        <button type="button" onclick="checkClozeAnswers()">Check Answers</button>
+    </form>
+    <div id="feedback"></div>
+
+    <script>
+        function checkClozeAnswers() {
+            const answers = ["went", "watched", "wrote", "fixed", "played"];
+            let userAnswers = [];
+            for (let i = 1; i <= 5; i++) {
+                userAnswers.push(document.getElementById('input' + i).value.trim().toLowerCase());
+            }
+
+            let feedback = "";
+            for (let i = 0; i < answers.length; i++) {
+                const inputElement = document.getElementById('input' + (i + 1));
+                if (userAnswers[i] === answers[i]) {
+                    feedback += `Sentence ${i + 1}: <span class="correct">Correct</span><br>`;
+                    inputElement.style.backgroundColor = "lightgreen";
+                } else {
+                    feedback += `Sentence ${i + 1}: <span class="incorrect">Incorrect</span> (Correct answer: "${answers[i]}")<br>`;
+                    inputElement.style.backgroundColor = "lightcoral";
+                }
+            }
+            document.getElementById('feedback').innerHTML = feedback;
+        }
+    </script>
+</div>
+
+<!-- Section 5: Flashcard Game -->
+<div class="text-container" id="section5">
+    <h1>Flashcard Game - Verb Transformation</h1>
+    <p>Match the verbs with their past forms. Drag and drop the flashcards into the correct drop zones.</p>
+    <div class="flashcards-container">
+        <div class="flashcard" draggable="true" id="flashcard1">Go</div>
+        <div class="flashcard" draggable="true" id="flashcard2">Have</div>
+        <div class="flashcard" draggable="true" id="flashcard3">Get</div>
+    </div>
+    <div class="dropzones-container">
+        <div class="dropzone" id="dropzone1">Went</div>
+        <div class="dropzone" id="dropzone2">Had</div>
+        <div class="dropzone" id="dropzone3">Got</div>
+    </div>
+
+    <script>
+        const flashcards = document.querySelectorAll('.flashcard');
+        const dropzones = document.querySelectorAll('.dropzone');
+
+        flashcards.forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text', e.target.id);
+                e.target.classList.add('dragging');
+            });
+            card.addEventListener('dragend', () => {
+                flashcards.forEach(card => card.classList.remove('dragging'));
+            });
+        });
+
+        dropzones.forEach(dropzone => {
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.target.classList.add('over');
+            });
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('over');
+            });
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.target.classList.remove('over');
+
+                const draggedCardId = e.dataTransfer.getData('text');
+                const draggedCard = document.getElementById(draggedCardId);
+
+                if (dropzone.innerHTML.includes(draggedCard.innerHTML)) {
+                    dropzone.innerHTML = draggedCard.innerHTML;
+                    draggedCard.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</div>
+
+<!-- Section 6: Memory Game -->
+<div class="text-container" id="section6">
+  <h1>Welcome to the Verb Practice Game!</h1>
+
+  <h2>Instructions</h2>
+
+  <p>Your goal is to match the present tense form of a verb with its correct past tense form. For example, match "play" with "played" or "eat" with "ate".</p>
+  <p>Here's how to play:</p>
+  <ol>
+    <li><strong>Click on the cards</strong> to flip them and reveal the verb forms.</li>
+    <li><strong>Match pairs</strong> of verb forms, where each present tense card must be matched with its corresponding past tense card.</li>
+    <li><strong>Score points</strong> for each correct match. If you flip two cards that do not match, they will flip back over after a short delay.</li>
+    <li><strong>Complete the game</strong> by matching all pairs of cards to win.</li>
+  </ol>
+  <p>To practice different sets of verbs, you can select a <strong>difficulty level</strong>:</p>
+  <ul>
+    <li><strong>Level 1:</strong> Basic verbs with regular forms.</li>
+    <li><strong>Level 2:</strong> A mix of regular and irregular verbs.</li>
+    <li><strong>Level 3:</strong> More challenging verbs with irregular forms.</li>
+    <li><strong>Level 4:</strong> Very hard verbs with more complex irregular forms.</li>
+    <li><strong>Level 5:</strong> Expert level with less common and complex irregular verbs.</li>
+  </ul>
+  <p>To change the difficulty level, click on the corresponding button for the level you wish to practice. The game will reset with the new difficulty, including resetting your score and attempts.</p>
+  <p>Good luck and have fun practicing your verbs!</p>
+
+  <!-- Button to go to the game -->
+  <a th:href="@{pastsimplematchinggame}"
+ style="margin: 10px;" target="_blank" ><button>Go to the Game</button></a>
+
+</div>
+
+
+
+<!-- Section 7: Sentence Transformation -->
+<div class="text-container" id="section7">
+    <h1>Practice Transforming Affirmative Sentences into Negative Ones</h1>
+    <p>Transforming affirmative sentences into their negative forms in the Past Simple tense involves using "did not" (or "didn't") followed by the base form of the verb. For example, to change "I went to the market yesterday" into a negative sentence, you would say "I did not go to the market yesterday."</p>
+    <form id="transformationForm">
+        <div class="transformation-row">
+            <span>1. I went to the market yesterday.</span><br> 
+            <label for="transform1">Negative:</label> 
+            <input type="text" class="transformation-input" id="transform1">
+        </div>
+        <div class="transformation-row">
+            <span>2. She had lunch at noon.</span><br> 
+            <label for="transform2">Negative:</label> 
+            <input type="text" class="transformation-input" id="transform2">
+        </div>
+        <div class="transformation-row">
+            <span>3. They got a new car last week.</span><br> 
+            <label for="transform3">Negative:</label> 
+            <input type="text" class="transformation-input" id="transform3">
+        </div>
+        <button type="button" onclick="checkTransformationAnswers()">Check Answers</button>
+    </form>
+    <div id="transformationFeedback"></div>
+
+    <script>
+        function checkTransformationAnswers() {
+            const correctAnswers = [
+                "I did not go to the market yesterday.",
+                "She did not have lunch at noon.",
+                "They did not get a new car last week."
+            ];
+            let userAnswers = [];
+            for (let i = 1; i <= 3; i++) {
+                userAnswers.push(document.getElementById('transform' + i).value.trim().toLowerCase());
+            }
+
+            let feedback = "";
+            for (let i = 0; i < correctAnswers.length; i++) {
+                const inputElement = document.getElementById('transform' + (i + 1));
+                if (userAnswers[i] === correctAnswers[i].toLowerCase()) {
+                    feedback += `Sentence ${i + 1}: <span class="correct">Correct</span><br>`;
+                    inputElement.style.backgroundColor = "lightgreen";
+                } else {
+                    feedback += `Sentence ${i + 1}: <span class="incorrect">Incorrect</span> (Correct answer: "${correctAnswers[i]}")<br>`;
+                    inputElement.style.backgroundColor = "lightcoral";
+                }
+            }
+            document.getElementById('transformationFeedback').innerHTML = feedback;
+        }
+    </script>
+</div>
+
+<!-- Section 8: Autonomous Practice -->
+<div class="text-container" id="section8">
+    <h1>Autonomous Practice</h1>
+    <p>Complete the following sentences in the Past Simple tense without any hints. Try to use the correct form of the verbs provided:</p>
+    <ul>
+        <li><strong>Go:</strong> Last weekend, I __________ to the beach.</li>
+        <li><strong>Have:</strong> She __________ a great time at the party yesterday.</li>
+        <li><strong>Get:</strong> They __________ a surprise gift last month.</li>
+    </ul>
+</div>
+
+
+			<!-- Progress Bar -->
+			<div class="progress-bar">
+				<div class="progress" id="progress"></div>
+			</div>
+
+</div>
+
+
+			<div class="scroll-arrows-lesson-desktop">
+				<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+				<button id="readAloud" onclick="readCurrentSection()">
+					<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+						style="width: 24px; height: 24px;">
+				</button>
+				<button id="stopReading" onclick="stopReading()"
+					style="background-color: red; display: none;">
+					<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+						style="width: 24px; height: 24px;">
+				</button>
+				<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+			</div>
+		</div>
+
+
+
+
+		<div class="scroll-arrows-lesson-mobile">
+			<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+			<button id="readAloud" onclick="readCurrentSection()">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="stopReading" onclick="stopReading()"
+				style="background-color: red; display: none;">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+		</div>
+
+
+	
+	
+	
+		<div class="activities">
+		
+            <a th:href="@{pastsimplematchinggame}"
+ class="grid-item tense" target="_blank">
+                <i class="fas fa-history"></i>
+                <h3>Past Simple - Verb Matching Game</h3>
+            </a>
+         
+
+			</div>
+	
+	<script th:src="@{/js/lesson.js}"></script>
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

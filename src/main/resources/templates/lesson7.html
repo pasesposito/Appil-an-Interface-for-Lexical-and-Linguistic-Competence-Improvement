@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+<meta charset="UTF-8">
+<title>LESSON 7: Subject and Object Pronouns</title>
+<style>
+
+.blank {
+    display: inline-block;
+    width: 100px; /* Adjust based on how long the blank should appear */
+    border-bottom: 2px solid #000;  /* Creates an underline effect */
+}
+
+.cloze-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.cloze-row span {
+	margin: 0 5px;
+}
+
+.cloze-input {
+	width: 100px;
+	padding: 5px;
+	font-size: 1em;
+	margin: 0 5px;
+}
+
+#loading {
+	display: none;
+	font-size: 18px;
+	color: #007BFF;
+	margin: 20px 0;
+}
+
+.result-item {
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.result-item:hover {
+	background-color: #f0f0f0;
+}
+
+.Content {
+	margin: 2%;
+}
+
+@media ( max-width : 768px) {
+	.wrapping {
+		flex-direction: column;
+	}
+	.Content {
+		width: 90%;
+		max-width: 100%;
+	}
+}
+
+#feedback {
+	margin-top: 20px;
+	font-weight: bold;
+}
+
+.correct {
+	color: green;
+}
+
+.incorrect {
+	color: red;
+}
+
+.flashcard {
+	width: 100px;
+	height: 50px;
+	background-color: #f2f2f2;
+	border: 1px solid #ddd;
+	margin: 5px;
+	text-align: center;
+	line-height: 50px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.flashcard.dragging {
+	opacity: 0.5;
+}
+
+.dropzone {
+	width: 120px;
+	height: 60px;
+	border: 2px dashed #ccc;
+	margin: 10px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	line-height: 60px;
+}
+
+.dropzone.over {
+	background-color: #e6ffe6;
+	border-color: #66ff66;
+}
+
+.flashcards-container, .dropzones-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.game-board {
+	display: grid;
+	grid-template-columns: repeat(4, 100px);
+	gap: 10px;
+	margin: 0 auto;
+	max-width: 450px;
+}
+
+.card {
+	width: 100px;
+	height: 100px;
+	background-color: #ddd;
+	border: 1px solid #ccc;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	cursor: pointer;
+	user-select: none;
+}
+
+.card.flipped {
+	background-color: #fff;
+}
+
+.card.matched {
+	background-color: #4caf50;
+	color: #fff;
+}
+
+.button {
+	display: inline-block;
+	padding: 10px 20px;
+	margin-top: 20px;
+	font-size: 16px;
+	text-align: center;
+	color: #fff;
+	background-color: #007bff;
+	border: none;
+	border-radius: 5px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.button:hover {
+	background-color: #0056b3;
+}
+</style>
+<link rel="stylesheet" th:href="@{/css/lessons.css}" />
+</head>
+
+<body>
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+	<div class="wrapping">
+		<div class="sidebar-lessons">
+			<div id="section-list"></div>
+		</div>
+
+		<div class="Content">
+			<!-- Section 1: Introduction -->
+			<div class="text-container active" id="section1">
+				<h1>Lesson 7: Subject Pronouns and Object Pronouns</h1>
+				<p>In this lesson, you will learn how to use subject and object
+					pronouns effectively in sentences.</p>
+				<p>Pronouns help avoid repetition and make sentences clearer.
+					Let's start!</p>
+			</div>
+
+			<!-- Section 2: Main Objectives -->
+			<div class="text-container" id="section2">
+	<h1>Learning Objectives</h1>
+	<p>In this section, you will learn to:</p>
+	<ul>
+		<li><strong>Identify Subject Pronouns</strong>: Understand and recognize subject pronouns such as <em>I</em>, <em>he</em>, <em>she</em>, and <em>we</em> and how they function as the doers of the action in a sentence.</li>
+		<li><strong>Recognize Object Pronouns</strong>: Learn to identify object pronouns like <em>me</em>, <em>him</em>, <em>her</em>, and <em>us</em>, which receive the action in a sentence.</li>
+		<li><strong>Use Pronouns Accurately</strong>: Practice using both subject and object pronouns correctly in both written and spoken English to improve fluency and communication skills.</li>
+	</ul>
+	<p>By the end of this section, you will be able to use pronouns confidently and accurately in various contexts.</p>
+</div>
+
+			<!-- Section 3: Explanation -->
+<div class="text-container" id="section3">
+	<h1>Understanding Subject and Object Pronouns</h1>
+	<p>Pronouns are words that take the place of nouns to avoid repetition. They are divided into different types based on their function in a sentence. In this section, we will explore two key types of pronouns: <strong>subject pronouns</strong> and <strong>object pronouns</strong>.</p>
+	
+	<br>
+	<h2>1. Subject Pronouns</h2>
+	<p>Subject pronouns are used as the subject of a sentence. They represent the person or thing performing the action. Here are some examples:</p>
+	<ul>
+		<li><strong>I:</strong> I enjoy playing soccer. (The speaker is performing the action.)</li>
+		<li><strong>He:</strong> He is reading a book. (The male person is performing the action.)</li>
+		<li><strong>She:</strong> She loves to dance. (The female person is performing the action.)</li>
+		<li><strong>We:</strong> We went to the movies last night. (A group of people, including the speaker, is performing the action.)</li>
+		<li><strong>They:</strong> They are studying for the exam. (A group of people or things is performing the action.)</li>
+	</ul>
+
+	<h2>2. Object Pronouns</h2>
+	<p>Object pronouns are used as the object of a sentence. They receive the action of the verb. Here are some examples:</p>
+	<ul>
+		<li><strong>Me:</strong> Can you pass me the salt? (The speaker is receiving the action.)</li>
+		<li><strong>Him:</strong> She saw him at the park. (The male person is receiving the action.)</li>
+		<li><strong>Her:</strong> I gave her the book. (The female person is receiving the action.)</li>
+		<li><strong>Us:</strong> The coach congratulated us after the match. (A group of people, including the speaker, is receiving the action.)</li>
+		<li><strong>Them:</strong> I called them yesterday. (A group of people or things is receiving the action.)</li>
+	</ul>
+
+	<p>In summary, subject pronouns are used to indicate who is doing the action, while object pronouns show who or what is receiving the action. Understanding the difference is key to using them correctly in sentences.</p>
+</div>
+
+
+			<!-- Section 4: Cloze Activity -->
+<div class="text-container" id="section4">
+	<h1>Fill in the Blanks with the Correct Pronoun</h1>
+	<p>Complete the sentences by selecting the correct subject or object pronoun from the dropdown list:</p>
+	<form id="clozeForm">
+		<div class="cloze-row">
+			1. Sarah loves pizza. I gave <span class="blank"></span> a slice.
+			<select class="cloze-input" id="input1" style="display: inline; width: 220px;">
+				<option value="">Select pronoun</option>
+				<option value="her">her</option>
+				<option value="him">him</option>
+				<option value="them">them</option>
+			</select>
+		</div>
+		<div class="cloze-row">
+			2. This is my brother. <span class="blank"></span> is very funny.
+			<select class="cloze-input" id="input2" style="display: inline; width: 220px;">
+				<option value="">Select pronoun</option>
+				<option value="he">he</option>
+				<option value="she">she</option>
+				<option value="they">they</option>
+			</select>
+		</div>
+		<div class="cloze-row">
+			3. My parents are kind. I really like <span class="blank"></span>.
+			<select class="cloze-input" id="input3" style="display: inline; width: 220px;">
+				<option value="">Select pronoun</option>
+				<option value="them">them</option>
+				<option value="us">us</option>
+				<option value="her">her</option>
+			</select>
+		</div>
+		<div class="cloze-row">
+			4. John is very tall. <span class="blank"></span> can play basketball well.
+			<select class="cloze-input" id="input4" style="display: inline; width: 220px;">
+				<option value="">Select pronoun</option>
+				<option value="he">he</option>
+				<option value="she">she</option>
+				<option value="them">them</option>
+			</select>
+		</div>
+		<button type="button" onclick="checkClozeAnswers()">Check Answers</button>
+	</form>
+	<div id="feedback"></div>
+
+	<script>
+		function checkClozeAnswers() {
+			const correctAnswers = ["her", "he", "them", "he"];
+			let userAnswers = [];
+			for (let i = 1; i <= 4; i++) {
+				userAnswers.push(document.getElementById('input' + i).value.trim());
+			}
+			let feedback = "";
+			let isAllCorrect = true;
+			for (let i = 0; i < correctAnswers.length; i++) {
+				const inputElement = document.getElementById('input' + (i + 1));
+				if (userAnswers[i].toLowerCase() === correctAnswers[i].toLowerCase()) {
+					feedback += `Sentence ${i + 1}: <span style="color: green;">Correct!</span><br>`;
+					inputElement.style.backgroundColor = "lightgreen";
+				} else {
+					feedback += `Sentence ${i + 1}: <span style="color: red;">Incorrect.</span> The correct answer is "<strong>${correctAnswers[i]}</strong>".<br>`;
+					inputElement.style.backgroundColor = "lightcoral";
+					isAllCorrect = false;
+				}
+			}
+
+			if (isAllCorrect) {
+				feedback += "<br><span style='font-weight: bold; color: green;'>Great job! You got all answers correct.</span>";
+			} else {
+				feedback += "<br><span style='font-weight: bold;'>Try again! Review your answers and check the correct ones.</span>";
+			}
+			document.getElementById('feedback').innerHTML = feedback;
+		}
+	</script>
+</div>
+
+			<!-- Section 5: Drag-and-Drop Matching -->
+<div class="text-container" id="section5">
+	<h1>Pronoun Matching Game</h1>
+	<p>Drag and drop the correct object pronouns to match the subject pronouns:</p>
+	<div class="game-board" id="game-board">
+		<!-- Subject Pronouns -->
+		<div class="flashcard" draggable="true" ondragstart="drag(event)" id="I">I</div>
+		<div class="flashcard" draggable="true" ondragstart="drag(event)" id="he">He</div>
+		<div class="flashcard" draggable="true" ondragstart="drag(event)" id="she">She</div>
+
+		<!-- Drop Zones for Object Pronouns -->
+		<div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)" id="dropI">Me</div>
+		<div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)" id="dropHe">Him</div>
+		<div class="dropzone" ondrop="drop(event)" ondragover="allowDrop(event)" id="dropShe">Her</div>
+	</div>
+
+	<!-- Button to Check the Matches -->
+	<button type="button" onclick="checkPronounMatches()">Check Matches</button>
+
+	<!-- Feedback Section -->
+	<div id="feedback"></div>
+
+	<script>
+		// Allow Drop Function (to enable drop)
+		function allowDrop(ev) {
+			ev.preventDefault();
+		}
+
+		// Drag Function (to store dragged element's id)
+		function drag(ev) {
+			ev.dataTransfer.setData("text", ev.target.id);
+		}
+
+		// Drop Function (to drop and display the matching pronoun)
+		function drop(ev) {
+			ev.preventDefault();
+			const data = ev.dataTransfer.getData("text");
+			ev.target.innerText = `${data} ✓`;  // Display the subject pronoun with a checkmark
+			ev.target.style.backgroundColor = "#d4edda";  // Light green background for correct drop
+			ev.target.setAttribute("data-matched", "true"); // Mark the drop zone as matched
+		}
+
+		// Function to Check if All Matches are Correct
+		function checkPronounMatches() {
+			let correctMatches = 0;
+			const totalMatches = 3; // Total number of correct matches
+			const feedbackDiv = document.getElementById('feedback');
+
+			// Check each drop zone for correct matches
+			const dropZones = document.querySelectorAll('.dropzone');
+			dropZones.forEach(zone => {
+				const correctAnswer = zone.id.replace("drop", "").toLowerCase(); // "dropI" -> "i"
+				const matchedPronoun = zone.innerText.trim().toLowerCase();
+
+				// If the drop zone contains the correct pronoun and is matched
+				if (matchedPronoun === correctAnswer) {
+					correctMatches++;
+				} else {
+					zone.style.backgroundColor = "#f8d7da"; // Red background for incorrect match
+				}
+			});
+
+			// Provide feedback based on the number of correct matches
+			if (correctMatches === totalMatches) {
+				feedbackDiv.innerHTML = "<span style='color: green; font-weight: bold;'>Great job! All matches are correct!</span>";
+			} else {
+				feedbackDiv.innerHTML = "<span style='color: red; font-weight: bold;'>Oops! Some matches are incorrect. Try again!</span>";
+			}
+		}
+	</script>
+</div>
+
+			<!-- Section 6: Pronoun Quiz -->
+<div class="text-container" id="section7">
+    <h1>Pronoun Quiz</h1>
+    <p>Test your understanding of subject and object pronouns with the quiz below. Select the correct pronoun to complete each sentence.</p>
+
+    <form id="pronounQuiz">
+        <div class="quiz-item">
+            <p>1. Sarah gave the book to <span class="blank"></span>.</p>
+            <label>
+                <input type="radio" name="q1" value="me"> Me
+            </label>
+            <label>
+                <input type="radio" name="q1" value="I"> I
+            </label>
+        </div>
+        
+        <div class="quiz-item">
+            <p>2. <span class="blank"></span> am going to the store later.</p>
+            <label>
+                <input type="radio" name="q2" value="He"> He
+            </label>
+            <label>
+                <input type="radio" name="q2" value="They"> They
+            </label>
+        </div>
+
+        <div class="quiz-item">
+            <p>3. I saw <span class="blank"></span> at the park yesterday.</p>
+            <label>
+                <input type="radio" name="q3" value="her"> Her
+            </label>
+            <label>
+                <input type="radio" name="q3" value="she"> She
+            </label>
+        </div>
+
+        <div class="quiz-item">
+            <p>4. The teacher called on <span class="blank"></span> to answer the question.</p>
+            <label>
+                <input type="radio" name="q4" value="me"> Me
+            </label>
+            <label>
+                <input type="radio" name="q4" value="us"> Us
+            </label>
+        </div>
+
+        <div class="quiz-item">
+            <p>5. The dog followed <span class="blank"></span> to the door.</p>
+            <label>
+                <input type="radio" name="q5" value="me"> Me
+            </label>
+            <label>
+                <input type="radio" name="q5" value="I"> I
+            </label>
+        </div>
+
+        <button type="button" onclick="checkQuizAnswers()">Check Answers</button>
+    </form>
+
+    <div id="quizFeedback"></div>
+</div>
+
+<script>
+    function checkQuizAnswers() {
+        const answers = {
+            q1: "me",
+            q2: "I",
+            q3: "her",
+            q4: "me",
+            q5: "me"
+        };
+        
+        let score = 0;
+        const quizItems = document.querySelectorAll('.quiz-item');
+        
+        quizItems.forEach(item => {
+            // Find the radio buttons for the current question
+            const selectedOption = item.querySelector('input[type="radio"]:checked');
+            const questionId = item.querySelector('input[type="radio"]').name; // Use the name attribute
+            
+            if (selectedOption && selectedOption.value === answers[questionId]) {
+                score++;
+                item.style.backgroundColor = "#d4edda"; // Green for correct answer
+            } else {
+                item.style.backgroundColor = "#f8d7da"; // Red for incorrect answer
+            }
+        });
+        
+        document.getElementById('quizFeedback').innerHTML = `Your score: ${score}/5`;
+    }
+</script>
+
+
+			
+			<!-- Progress Bar -->
+			<div class="progress-bar">
+				<div class="progress" id="progress"></div>
+			</div>
+		</div>
+
+		<div class="scroll-arrows-lesson-desktop">
+				<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+				<button id="readAloud" onclick="readCurrentSection()">
+					<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+						style="width: 24px; height: 24px;">
+				</button>
+				<button id="stopReading" onclick="stopReading()"
+					style="background-color: red; display: none;">
+					<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+						style="width: 24px; height: 24px;">
+				</button>
+				<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+			</div>
+		</div>
+
+
+
+
+		<div class="scroll-arrows-lesson-mobile">
+			<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+			<button id="readAloud" onclick="readCurrentSection()">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="stopReading" onclick="stopReading()"
+				style="background-color: red; display: none;">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+		</div>
+
+	
+
+
+	<script th:src="@{/js/lesson.js}"></script>
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+
+</html>

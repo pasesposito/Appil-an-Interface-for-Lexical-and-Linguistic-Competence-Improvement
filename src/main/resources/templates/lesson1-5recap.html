@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+    <script th:src="@{/js/quizfunctions.js}"></script>
+    <title>Quiz - Lesson 1-5 recap </title>
+    <style type="text/css">
+        .Content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+            width: 100%;
+            height: 100vh;
+        }
+        #game-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 60%;
+            position: relative;
+        }
+        #info-container {
+            justify-content: center;
+            margin-top: 10px;
+            text-align: left;
+            font-size: 0.5em;
+            color: #333;
+            display: flex !important;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+        #info-container p {
+            margin: 0;
+        }
+        #question-container {
+            margin: 15px;
+        }
+        #image-container {
+            justify-content: center;
+            display: flex;
+        }
+        #options-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 10px;
+        }
+        .option {
+            display: flex;
+            width: 50%;
+            justify-content: center;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .option:hover {
+            background-color: #d6d9db;
+        }
+        /* Progress bar styles */
+        #progress-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 10px 0;
+            height: 20px;
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: #003366;
+            transition: width 0.3s ease;
+        }
+        /* Button styles */
+        .quiz-button {
+            margin: 10px 5px;
+        }
+        #controls-container {
+            display: flex;
+        }
+        /* Positioning for Restart and End buttons */
+        #controls {
+        width: 100%;
+            position: block;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+        
+ 
+    </style>
+    <link th:href="@{/css/quiz.css}" rel="stylesheet">
+</head>
+
+<body>
+    <th:block th:replace="~{fragments/header::header}"></th:block>
+    <button id="showInstructions">?</button>
+    
+    <div class="Content">
+        <div id="game-container">
+            <h1>Lessons 1-5 Recap Quiz</h1>
+            <div id="error"></div>
+
+            <div id="info-container" style="display: none;">
+                <!-- Detailed image information will be inserted here -->
+            </div>
+
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            
+            <div id="question-container"></div>
+            <div id="options-container"></div>
+            <button id="next-button" class="quiz-button" style="float:right; display:none">Next</button>
+            <p id="feedback"></p>
+            <div id="notification"></div>
+             <div id="errorNotification"></div>
+           
+            <div id="controls-container">
+                <div id="controls">
+                    <button id="startGame" class="quiz-button">Start Game</button>
+                    <button id="restart-button" class="quiz-button" style="display: none;">Restart Quiz</button>
+                    <button id="end-button" class="quiz-button" style="display: none;">End Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+  
+  <script>
+  
+  const questions = [
+	    // Vocabulary and Basic English
+	    {
+	        question: "What is the plural of 'child'?",
+	        options: ["childs", "children", "childes", "childer"],
+	        answer: "children",
+	    },
+	    {
+	        question: "What is the plural of 'mouse'?",
+	        options: ["mouses", "mice", "mousees", "mices"],
+	        answer: "mice",
+	    },
+	    {
+	        question: "What is the plural of 'goose'?",
+	        options: ["geese", "gooses", "goosen", "gooseses"],
+	        answer: "geese",
+	    },
+	    {
+	        question: "What is the plural of 'cactus'?",
+	        options: ["cactuses", "cacti", "cactuseses", "cactuseses"],
+	        answer: "cacti",
+	    },
+	    {
+	        question: "What is the plural of 'person'?",
+	        options: ["persons", "people", "persones", "personas"],
+	        answer: "people",
+	    },
+	    {
+	        question: "What is the plural of 'tooth'?",
+	        options: ["tooths", "teeth", "toothe", "toothes"],
+	        answer: "teeth",
+	    },
+	    {
+	        question: "What is the plural of 'foot'?",
+	        options: ["foots", "feet", "foote", "footies"],
+	        answer: "feet",
+	    },
+	    {
+	        question: "What is the plural of 'man'?",
+	        options: ["mans", "men", "manies", "menes"],
+	        answer: "men",
+	    },
+	    {
+	        question: "What is the plural of 'woman'?",
+	        options: ["womans", "women", "womene", "womanes"],
+	        answer: "women",
+	    },
+	    {
+	        question: "What is the plural of 'child'?",
+	        options: ["childs", "children", "childes", "childer"],
+	        answer: "children",
+	    },
+	    // Verbs and Sentence Structure
+	    {
+	        question: "What is the correct form of 'to be' for 'I'?",
+	        options: ["am", "is", "are", "was"],
+	        answer: "am",
+	    },
+	    {
+	        question: "Which of the following is an adjective?",
+	        options: ["Quickly", "Fast", "Very", "Quite"],
+	        answer: "Fast",
+	    },
+	    {
+	        question: "Choose the correct sentence: 'He ___ a doctor.'",
+	        options: ["is", "are", "am", "was"],
+	        answer: "is",
+	    },
+	    {
+	        question: "What is the opposite of 'hot'?",
+	        options: ["Cold", "Warm", "Cool", "Chilly"],
+	        answer: "Cold",
+	    },
+	    {
+	        question: "Which of the following sentences is correct?",
+	        options: ["She are happy.", "She is happy.", "She am happy.", "She be happy."],
+	        answer: "She is happy.",
+	    },
+	    {
+	        question: "What is the correct form of 'to have' for 'They'?",
+	        options: ["has", "have", "having", "had"],
+	        answer: "have",
+	    },
+	    {
+	        question: "Choose the correct form of the verb: 'They ___ to school every day.'",
+	        options: ["go", "goes", "gone", "going"],
+	        answer: "go",
+	    },
+	    {
+	        question: "What is the past form of 'go'?",
+	        options: ["Gone", "Going", "Went", "Go"],
+	        answer: "Went",
+	    },
+	    {
+	        question: "What is the past simple form of 'have'?",
+	        options: ["Had", "Haved", "Have", "Having"],
+	        answer: "Had",
+	    },
+	    {
+	        question: "Which sentence describes a daily routine?",
+	        options: ["I will go to the store.", "I went to the store.", "I go to the store.", "I am going to the store."],
+	        answer: "I go to the store.",
+	    },
+	    // Vocabulary and Grammar
+	   
+	    {
+	        question: "What do you call a common object used for writing?",
+	        options: ["Pen", "Paper", "Eraser", "Notebook"],
+	        answer: "Pen",
+	    },
+	    {
+	        question: "Which article fits best? '___ apple.'",
+	        options: ["A", "An", "The", "Some"],
+	        answer: "An",
+	    },
+	    {
+	        question: "What is the term for a story about love?",
+	        options: ["Mystery", "Romance", "Adventure", "Horror"],
+	        answer: "Romance",
+	    },
+	    {
+	        question: "Which of these is a past time expression?",
+	        options: ["Tomorrow", "Last week", "Next week", "Today"],
+	        answer: "Last week",
+	    },
+	    {
+	        question: "Which word is an adverb?",
+	        options: ["Quickly", "Fast", "Strong", "Bright"],
+	        answer: "Quickly",
+	    },
+	    {
+	        question: "Choose the correct form: 'He ___ (not) like ice cream.'",
+	        options: ["doesn't", "don't", "not", "isn't"],
+	        answer: "doesn't",
+	    },
+	    {
+	        question: "Which word is a noun?",
+	        options: ["Beautiful", "Quickly", "Happiness", "Run"],
+	        answer: "Happiness",
+	    },
+	    {
+	        question: "What is the negative form of 'She likes pizza.'?",
+	        options: ["She doesn't likes pizza.", "She don't like pizza.", "She doesn't like pizza.", "She not like pizza."],
+	        answer: "She doesn't like pizza.",
+	    },
+	    {
+	        question: "What is the correct form of 'to be' for 'You'?",
+	        options: ["am", "is", "are", "was"],
+	        answer: "are",
+	    },
+	    // Vocabulary and More Irregular Plurals
+	    {
+	        question: "What is the plural of 'fish'?",
+	        options: ["fishes", "fish", "fishies", "fisheses"],
+	        answer: "fish",
+	    },
+	    {
+	        question: "What is the plural of 'sheep'?",
+	        options: ["sheeps", "sheep", "sheepies", "sheepes"],
+	        answer: "sheep",
+	    },
+	    {
+	        question: "What is the plural of 'deer'?",
+	        options: ["deers", "deer", "deeries", "deeres"],
+	        answer: "deer",
+	    },
+	    {
+	        question: "What is the plural of 'ox'?",
+	        options: ["oxes", "oxen", "oxs", "oxens"],
+	        answer: "oxen",
+	    },
+	    {
+	        question: "What is the plural of 'person'?",
+	        options: ["persons", "people", "persones", "personas"],
+	        answer: "people",
+	    },
+	    {
+	        question: "What is the plural of 'cactus'?",
+	        options: ["cactuses", "cacti", "cactuseses", "cactuseses"],
+	        answer: "cacti",
+	    },
+	    {
+	        question: "What is the plural of 'louse'?",
+	        options: ["louses", "lice", "lousies", "louseses"],
+	        answer: "lice",
+	    },
+	    {
+	        question: "What is the plural of 'formula'?",
+	        options: ["formulas", "formulae", "formulaes", "formulais"],
+	        answer: "formulae",
+	    },
+	    {
+	        question: "What is the plural of 'fungus'?",
+	        options: ["funguses", "fungi", "fungusses", "funguseses"],
+	        answer: "fungi",
+	    },
+	    {
+	        question: "What is the plural of 'crisis'?",
+	        options: ["crises", "crisises", "crisi", "criseses"],
+	        answer: "crises",
+	    },
+	    // Additional Vocabulary
+	    {
+	        question: "What is the opposite of 'happy'?",
+	        options: ["Sad", "Joyful", "Excited", "Angry"],
+	        answer: "Sad",
+	    },
+	    {
+	        question: "Which of the following is not a fruit?",
+	        options: ["Apple", "Banana", "Carrot", "Orange"],
+	        answer: "Carrot",
+	    },
+	    {
+	        question: "What do you call the first meal of the day?",
+	        options: ["Lunch", "Dinner", "Breakfast", "Snack"],
+	        answer: "Breakfast",
+	    },
+	    {
+	        question: "What is the term for a young cat?",
+	        options: ["Kitten", "Puppy", "Cub", "Calf"],
+	        answer: "Kitten",
+	    },
+	    {
+	        question: "What do you call a baby dog?",
+	        options: ["Kitten", "Puppy", "Cub", "Calf"],
+	        answer: "Puppy",
+	    },
+	    {
+	        question: "Which color is a primary color?",
+	        options: ["Green", "Blue", "Purple", "Orange"],
+	        answer: "Blue",
+	    },
+	    {
+	        question: "What is the opposite of 'fast'?",
+	        options: ["Slow", "Quick", "Rapid", "Speedy"],
+	        answer: "Slow",
+	    },
+	    {
+	        question: "What is the term for a place where books are kept?",
+	        options: ["Library", "Store", "School", "Cafe"],
+	        answer: "Library",
+	    },
+	    {
+	        question: "What is the plural of 'leaf'?",
+	        options: ["leafs", "leaves", "leafes", "leafies"],
+	        answer: "leaves",
+	    },
+	    {
+	        question: "What is the term for someone who teaches?",
+	        options: ["Teacher", "Student", "Principal", "Janitor"],
+	        answer: "Teacher",
+	    },
+	    // New Vocabulary and Basic English
+	    {
+	        question: "What is the plural of 'leaf'?",
+	        options: ["leafs", "leaves", "leafes", "leafies"],
+	        answer: "leaves",
+	    },
+	    {
+	        question: "What is the opposite of 'empty'?",
+	        options: ["Full", "Vacant", "Clear", "Open"],
+	        answer: "Full",
+	    },
+	    {
+	        question: "Which of these is a synonym for 'happy'?",
+	        options: ["Joyful", "Sad", "Angry", "Upset"],
+	        answer: "Joyful",
+	    },
+	    {
+	        question: "What is the correct past tense of 'run'?",
+	        options: ["Runned", "Ran", "Running", "Run"],
+	        answer: "Ran",
+	    },
+	    {
+	        question: "What is the past form of 'see'?",
+	        options: ["Saw", "Seen", "Seeing", "Sees"],
+	        answer: "Saw",
+	    },
+	    {
+	        question: "What do you call a group of lions?",
+	        options: ["Pack", "Herd", "Pride", "Gaggle"],
+	        answer: "Pride",
+	    },
+	    {
+	        question: "What is the plural of 'octopus'?",
+	        options: ["Octopuses", "Octopi", "Octopodes", "Octopuseses"],
+	        answer: "Octopuses",
+	    },
+	    {
+	        question: "What do you call the process of cooking food with dry heat in an oven?",
+	        options: ["Boiling", "Baking", "Roasting", "Frying"],
+	        answer: "Baking",
+	    },
+	    {
+	        question: "What is the term for the sound a cat makes?",
+	        options: ["Bark", "Meow", "Roar", "Chirp"],
+	        answer: "Meow",
+	    },
+	    {
+	        question: "Which of these is an example of a conjunction?",
+	        options: ["And", "Quickly", "Red", "Happy"],
+	        answer: "And",
+	    },
+	    // New Vocabulary and Grammar
+	    {
+	        question: "What do you call the time period of 100 years?",
+	        options: ["Decade", "Century", "Millennium", "Era"],
+	        answer: "Century",
+	    },
+	    {
+	        question: "What is the term for a word that has the opposite meaning?",
+	        options: ["Synonym", "Antonym", "Homonym", "Analogy"],
+	        answer: "Antonym",
+	    },
+	    {
+	        question: "What is the plural of 'locus'?",
+	        options: ["Locuses", "Loci", "Locuses", "Locii"],
+	        answer: "Loci",
+	    },
+	    {
+	        question: "What is the opposite of 'dark'?",
+	        options: ["Bright", "Dim", "Light", "Shadow"],
+	        answer: "Light",
+	    },
+	    {
+	        question: "Which word is an example of a proper noun?",
+	        options: ["city", "river", "London", "flower"],
+	        answer: "London",
+	    },
+	    {
+	        question: "What do you call a baby goat?",
+	        options: ["Calf", "Kid", "Pup", "Cub"],
+	        answer: "Kid",
+	    },
+	    {
+	        question: "What is the plural of 'mouse'?",
+	        options: ["Mice", "Mouses", "Mouse", "Mices"],
+	        answer: "Mice",
+	    },
+	    {
+	        question: "What is the past tense of 'buy'?",
+	        options: ["Buyed", "Bought", "Buying", "Buys"],
+	        answer: "Bought",
+	    },
+	    {
+	        question: "Which of the following is a compound word?",
+	        options: ["Rainbow", "Beautiful", "Happiness", "Quickly"],
+	        answer: "Rainbow",
+	    },
+	    {
+	        question: "What is the term for an angle greater than 90 degrees?",
+	        options: ["Acute", "Obtuse", "Right", "Straight"],
+	        answer: "Obtuse",
+	    }
+	];
+
+  
+  
+//Fisher-Yates shuffle algorithm to shuffle the questions array
+  function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+      }
+      return array;
+  }
+
+  // Quiz variables
+  let currentQuestionIndex = 0;
+  let score = 0;
+
+  // Function to start the quiz
+  function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById("next-button").style.display = "block";
+      document.getElementById("restart-button").style.display = "none";
+      document.getElementById("end-button").style.display = "block";
+      document.getElementById("feedback").innerText = "";
+      document.getElementById("startGame").style.display = "none";
+
+      // Shuffle the questions at the start of the quiz
+      shuffleArray(questions);
+
+      updateProgressBar();
+      showQuestion();
+  }
+
+  // Function to display a question
+  function showQuestion() {
+      if (currentQuestionIndex < questions.length) {
+          const questionContainer = document.getElementById("question-container");
+          const optionsContainer = document.getElementById("options-container");
+
+          // Clear previous question and options
+          questionContainer.innerHTML = "";
+          optionsContainer.innerHTML = "";
+
+          // Get the current question
+          const currentQuestion = questions[currentQuestionIndex];
+
+          // Display the question
+          questionContainer.innerHTML = `<h2>${currentQuestion.question}</h2>`;
+
+          // Display the options
+          currentQuestion.options.forEach((option) => {
+              const optionElement = document.createElement("div");
+              optionElement.className = "option";
+              optionElement.innerText = option;
+              optionElement.onclick = () => selectOption(option, optionElement); // Pass the option and its element
+              optionsContainer.appendChild(optionElement);
+          });
+      } else {
+          showResult();
+      }
+  }
+
+  // Function to handle option selection
+  function selectOption(selectedOption, optionElement) {
+      const currentQuestion = questions[currentQuestionIndex];
+      const feedbackElement = document.getElementById("feedback");
+
+      // Check if the selected option is correct
+      if (selectedOption === currentQuestion.answer) {
+          score += 5; // Increase score
+          addPointsToUserMessage(5, true);
+          optionElement.style.backgroundColor = "lightgreen"; // Highlight correct answer
+          
+          // Move to the next question after a delay
+          setTimeout(() => {
+              currentQuestionIndex++;
+              showQuestion(); // Automatically go to the next question
+              updateProgressBar();
+          }, 1000); // 1 second delay
+          
+      } else {
+          addPointsToUserMessage(5, false);
+          optionElement.style.backgroundColor = "red"; // Highlight wrong answer in red
+
+          // Find the correct option and flash it
+          const optionsContainer = document.getElementById("options-container");
+          const correctOptionElement = Array.from(optionsContainer.childNodes).find(
+              child => child.innerText === currentQuestion.answer
+          );
+
+          // Flash the correct answer multiple times
+          let flashCount = 0;
+          const maxFlashes = 6; // Total number of flashes
+          const flashInterval = 500; // Duration of each flash in milliseconds
+          const flashDuration = 3000; // Total duration before moving to the next question
+
+          const flashIntervalId = setInterval(() => {
+              // Toggle the background color
+              if (correctOptionElement.style.backgroundColor === "lightgreen") {
+                  correctOptionElement.style.backgroundColor = ""; // Reset to original
+              } else {
+                  correctOptionElement.style.backgroundColor = "lightgreen"; // Flash light green
+              }
+
+              flashCount++;
+              if (flashCount >= maxFlashes) {
+                  clearInterval(flashIntervalId); // Stop flashing after maxFlashes
+                  correctOptionElement.style.backgroundColor = ""; // Clear highlight
+              }
+          }, flashInterval);
+
+          // Move to the next question after the total flash duration
+          setTimeout(() => {
+              currentQuestionIndex++;
+              showQuestion(); // Automatically go to the next question
+              updateProgressBar();
+          }, flashDuration); // Move on after total flash duration
+      }
+
+      // Clear feedback after a timeout
+      setTimeout(() => {
+          feedbackElement.innerText = "";
+      }, 3000); // 3-second timeout
+  }
+
+  // Function to show the next question
+  function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+          showQuestion();
+          updateProgressBar(); // Update progress after showing the question
+      } else {
+          showResult();
+      }
+  }
+
+  // Function to update the progress bar
+  function updateProgressBar() {
+      const progressBar = document.getElementById("progress-bar");
+      const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+      progressBar.style.width = `${progress}%`;
+  }
+
+//Function to display the final result
+  function showResult() {
+      const questionContainer = document.getElementById("question-container");
+      const optionsContainer = document.getElementById("options-container");
+      const feedbackElement = document.getElementById("feedback");
+      const nextButton = document.getElementById("next-button");
+      const restartButton = document.getElementById("restart-button");
+      const endButton = document.getElementById("end-button");
+
+      // Clear previous content
+      questionContainer.innerHTML = "";
+      optionsContainer.innerHTML = "";
+
+      // Show final score
+      questionContainer.innerHTML = `<h2>Your score: ${score} out of ${questions.length * 5}</h2>`;
+      feedbackElement.innerText = "";
+
+      // Show Restart and End buttons
+      restartButton.style.display = "inline";
+      endButton.style.display = "inline";
+      nextButton.style.display = "none";
+  }
+
+
+  // Function to restart the quiz
+  function restartQuiz() {
+      startQuiz();
+  }
+
+//Function to end the quiz with a confirmation
+  function endTest() {
+      const confirmEnd = confirm("Are you sure you want to end the quiz? Your progress will be lost.");
+      
+      if (confirmEnd) {
+         
+
+          // Clear question and options containers
+          const questionContainer = document.getElementById("question-container");
+          const optionsContainer = document.getElementById("options-container");
+          const feedbackElement = document.getElementById("feedback");
+          
+          // Clear previous content
+          questionContainer.innerHTML = "";
+          optionsContainer.innerHTML = "";
+          
+          // Show feedback message
+          feedbackElement.innerText = "Thank you for taking the quiz!";
+          
+          // Show result
+          showResult(); 
+
+          // Hide the buttons that are not needed
+          document.getElementById("next-button").style.display = "none";
+          document.getElementById("restart-button").style.display = "none";
+          document.getElementById("end-button").style.display = "none";
+          
+          // Show the Start Game button again
+          document.getElementById("startGame").style.display = "block";
+      }
+  }
+
+
+  // Event listeners for buttons
+  document.getElementById("startGame").addEventListener("click", startQuiz);
+  document.getElementById("next-button").addEventListener("click", nextQuestion);
+  document.getElementById("restart-button").addEventListener("click", restartQuiz);
+  document.getElementById("end-button").addEventListener("click", endTest);
+
+
+</script>
+    
+    
+ <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+  
+  
+</body>
+</html>

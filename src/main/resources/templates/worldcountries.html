@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>World Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+   
+    <style>
+    
+        #map {
+            height: 100vh; /* Adjust as needed */
+            width: 100%;   /* Make map responsive */
+           
+        }
+        
+        .Content {
+            flex: 1;
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            width: 100%;
+        }
+        
+        .modal {
+        
+        	z-index: 0;
+        }
+        
+    </style>
+    <!-- Include additional head content if needed -->
+       <th:block th:replace="~{fragments/head :: head}"></th:block>
+        <link rel="stylesheet" th:href="@{/css/quiz.css}"/>
+    
+</head>
+<body>
+    <!-- Include header content if applicable -->
+       <th:block th:replace="~{fragments/header :: header}"></th:block>
+       
+        <button id="showInstructions">?</button>
+       
+       <div id="instructionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>How to Play: Discover Flags and Nationalities</h2>
+        
+        <p><strong>Welcome to the World Map Game!</strong></p>
+        <p>In this game, you will explore different countries on a world map. Click on a country to learn more about it, including its flag and how to pronounce the nationality. Here's how to get started:</p>
+        
+        <p><strong>1. Explore the Map:</strong></p>
+        <p>Use your mouse or touch screen to navigate around the world map. You can zoom in and out and drag the map to explore different regions.</p>
+
+        <p><strong>2. Click on a Country:</strong></p>
+        <p>When you click on a country, a pop-up will appear showing the country's flag and the name of the nationality.</p>
+
+        <p><strong>3. Listen to the Pronunciation:</strong></p>
+        <p>In the pop-up, you'll see an option to listen to how the nationality is pronounced. Click the play button to hear the correct pronunciation.</p>
+
+        <p><strong>4. Learn and Explore:</strong></p>
+        <p>Feel free to click on as many countries as you like to discover different flags and nationalities. This is a great way to familiarize yourself with world geography and improve your language skills.</p>
+
+        <p><strong>5. Challenge Yourself:</strong></p>
+        <p>Try to remember the flags and pronunciations for different countries. Can you identify them without looking next time?</p>
+
+        <p><strong>Enjoy the Game!</strong></p>
+        <p>Have fun exploring the world and learning about different countries and cultures.</p>
+    </div>
+</div>
+       
+    
+    
+    <div class="Content">
+        <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
+    
+    <script th:src="@{/js/worldcountries.js}"> </script>
+    
+       <script th:src="@{/js/quizfunctions.js}"></script>
+
+   
+     <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+    
+</body>
+</html>

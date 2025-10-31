@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+
+
+<head>
+<title>Appìl - Memory</title>
+
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+<style>
+#game-board {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr); /* 4 columns by default */
+	gap: 20px; /* Adjust the gap between cards */
+	justify-content: center;
+	align-items: center;
+	/* height: 100vh; */ /* Adjust the height as needed */
+}
+
+.card {
+	width: 150px; /* Default card width */
+	height: 150px; /* Default card height */
+	perspective: 1000px; /* 3D perspective for flip effect */
+	position: relative;
+}
+
+.game-over-popup {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%); /* Center the popup */
+	background-color: white;
+	padding: 20px;
+	border: 1px solid #ccc;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+}
+
+#game-board .card .hover-window {
+	display: none;
+	/* ... other styles */
+	z-index: 10; /* Ensure it's on top */
+}
+
+.front, .back {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	backface-visibility: hidden;
+}
+
+.front {
+	background-color: #ccc; /* Front face background color */
+}
+
+.back {
+	background-color: #fff; /* Back face background color */
+	transform: rotateY(180deg);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: cover;
+}
+
+.text-overlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 24px; /* Default text size */
+	color: white; /* Text color */
+}
+
+#memory-attribution {
+	font-size: 8px;
+	position: relative; /* Adjusted from fixed to relative */
+	margin-top: 20px;
+	/* Space between the game board and the attribution */
+	background-color: #f1f1f1;
+	padding: 10px;
+	border-top: 1px solid #ddd;
+	z-index: 10;
+	/* Ensure it stays above other content but below footer if necessary */
+	margin: 20px;
+}
+/* Media Queries for Smaller Screens */
+@media ( max-width : 768px) {
+	.card {
+		height: 120px; /* Adjust card height */
+		width: 120px;
+	}
+	.text-overlay {
+		font-size: 14px; /* Adjust text size for smaller screens */
+	}
+}
+
+@media ( max-width : 480px) {
+	#game-board {
+		grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+		/* Further adjust card size */
+		gap: 2px; /* Minimal gap between cards */
+	}
+	.card {
+		height: 100px; /* Further reduce card height */
+		width: 100px;
+	}
+	.text-overlay {
+		font-size: 12px; /* Adjust text size for very small screens */
+	}
+}
+
+/* Styling for form cards (pronouns) */
+.form-card .back {
+	background: #b2f2b0; /* Green for pronouns */
+	color: black;
+	font-weight: bold;
+}
+
+/* Styling for verb cards */
+.verb-card .back {
+	background: #ffffb3; /* Pale yellow for verbs */
+	color: black;
+	font-weight: bold;
+}
+
+#selection {
+	display: flex;
+	justify-content: center;
+	gap: 20px;
+}
+</style>
+<link rel="stylesheet" th:href="@{/css/quiz.css}" />
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Memory Game</title>
+
+
+</head>
+
+<body>
+
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+	<button id="showInstructions">?</button>
+	<!-- Instruction Modal -->
+	<div id="instructionModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h2>Instructions</h2>
+			<p>Welcome to the Verb Practice Game!</p>
+			<p>Click on the cards to flip them. Match the form of the verb
+				with its correct verb form. For example, match "I" with "am" or "He"
+				with "is".</p>
+			<p>Choose between practicing verbs for "to be" or "to have" by
+				clicking the respective button below.</p>
+			<p>Good luck!</p>
+		</div>
+	</div>
+
+
+	<div class="Content">
+
+		<h1 style="text-align: center;">Verb matching memory Game</h1>
+
+		<div id="selection">
+			<button id="practiceBe">Practice "To Be"</button>
+			<button id="practiceHave">Practice "To Have"</button>
+			<button id="practiceDo">Practice "To Do"</button>
+		</div>
+
+		<h4 style="text-align: center;">
+			Score: <span id="score">0</span>
+		</h4>
+		<h4 style="text-align: center;">
+			Incorrect attempts: <span id="incorrect-attempts">0</span>
+		</h4>
+
+
+		<div id="game-board"></div>
+
+
+
+	</div>
+
+
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+	<script th:src="@{/js/verbmatchinggame.js}"></script>
+	<script th:src="@{/js/quizfunctions.js}"></script>
+</body>
+</html>
+

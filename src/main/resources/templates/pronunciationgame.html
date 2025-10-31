@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Alphabet and Pronunciation</title>
+    <meta charset="UTF-8">
+
+    <!-- Include additional head content -->
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+     <link rel="stylesheet" th:href="@{/css/quiz.css}">
+    
+    <script th:src="@{js/search.js}"></script>
+
+    <style>
+        .word:has(span) {
+            cursor: url('imgs/volume_up_40dp.svg'), auto;
+        }
+        
+        .word {
+        
+        	cursor:pointer;
+        }
+
+        .letter-container {
+            border: 2px solid #333;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .letter {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            background-color: aliceblue;
+            border: 1px solid #333;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .highlight {
+            background-color: #77DD77;
+        }
+
+        .wrapper {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 50px;
+        }
+
+        .word {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 2px;
+            cursor: pointer;
+        }
+
+        .word:hover {
+            background-color: lightblue;
+        }
+        
+        
+    </style>
+     
+</head>
+<body>
+
+    <!-- Include header content -->
+     <th:block th:replace="~{fragments/header :: header}"></th:block>
+      <button id="showInstructions">?</button>
+
+    <div class="Content">
+    
+     <!-- Instruction Modal -->
+    <!-- Instruction Modal -->
+        <div id="instructionModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Instructions</h2>
+                <p><strong>Welcome to the Pronunciation Game!</strong></p>
+                <p><strong>Objective:</strong></p>
+                <p>Your goal is to practice and improve your pronunciation of the English alphabet and words.</p>
+                <p><strong>How to Play:</strong></p>
+                <ul>
+                    <li><strong>Click on a Letter:</strong> The game displays letters from the English alphabet. Click on any letter to hear its pronunciation.</li>
+                    <li><strong>Highlight Letters:</strong> After selecting a letter, the game will highlight occurrences of that letter in the text provided.</li>
+                    <li><strong>Pronounce Words:</strong> When you hover over or click on highlighted words, you will hear the pronunciation of the entire word.</li>
+                </ul>
+                <p><strong>Interactive Features:</strong></p>
+                <ul>
+                    <li><strong>Highlighting:</strong> As you click on letters, the game will highlight those letters in the text to help you visualize their occurrence.</li>
+                    <li><strong>Pronunciation Feedback:</strong> Use the text-to-speech feature to hear how each letter and word is pronounced. This will help you practice and understand the correct pronunciation.</li>
+                </ul>
+                <p><strong>Additional Tips:</strong></p>
+                <ul>
+                    <li><strong>Practice Regularly:</strong> Regular practice will help improve your pronunciation and understanding of the English language.</li>
+                    <li><strong>Explore Different Words:</strong> Try different words to hear various pronunciations and improve your skills.</li>
+                </ul>
+                <p><strong>Good Luck and Have Fun!</strong> Enjoy the game and feel free to repeat exercises to enhance your pronunciation skills.</p>
+            </div>
+        </div>
+        <!-- Include searchWiki content -->
+         <th:block th:replace="~{fragments/searchWiki :: searchWiki}"></th:block>
+        
+        <div id="letter-container" class="letter-container">
+            <!-- Letters will be dynamically added here -->
+        </div>
+
+        <div class="wrapper">
+            <div id="result">
+                <!-- Results will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; // English alphabet
+
+        // Create letters dynamically
+        alphabet.split('').forEach(letter => {
+            const letterDiv = document.createElement('div');
+            letterDiv.textContent = letter;
+            letterDiv.classList.add('letter');
+            letterDiv.addEventListener('click', () => {
+                highlightLetterInText(letter);
+                pronounceLetter(letter);
+            });
+            document.getElementById('letter-container').appendChild(letterDiv);
+        });
+
+        // Function to highlight letter in text and enable word pronunciation on hover
+        function highlightLetterInText(letter) {
+            const textContainer = document.getElementById('result');
+            const text = textContainer.textContent;
+            const words = text.split(/\s+/); // Split text into words
+
+            // Clear previous content
+            textContainer.innerHTML = '';
+
+            // Iterate through words
+            words.forEach(word => {
+                const wordSpan = document.createElement('span');
+                let wordText = word;
+                if (word.match(new RegExp(letter, 'gi'))) {
+                    wordText = word.replace(new RegExp(`(${letter})`, 'gi'), '<span class="highlight">$1</span>');
+                    wordSpan.classList.add('word');
+                    wordSpan.addEventListener('click', () => {
+                        pronounceWord(word);
+                    });
+                }
+                wordSpan.innerHTML = wordText + ' ';
+                textContainer.appendChild(wordSpan);
+            });
+        }
+
+        // Function to pronounce letter using Web Speech API
+        function pronounceLetter(letter) {
+            const utterance = new SpeechSynthesisUtterance(letter);
+            utterance.lang = 'en-US'; // Set language to English (United States)
+            speechSynthesis.speak(utterance);
+        }
+
+        // Function to pronounce word using Web Speech API
+        function pronounceWord(word) {
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US'; // Set language to English (United States)
+            speechSynthesis.speak(utterance);
+        }
+    </script>
+    <script th:src="@{/js/quizfunctions.js}"></script>
+
+   <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+   
+    
+</body>
+</html>

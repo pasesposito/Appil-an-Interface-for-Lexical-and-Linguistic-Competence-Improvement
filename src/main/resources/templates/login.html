@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+ <meta charset="UTF-8">
+ 	<meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Appìl - Login</title>
+  	
+    
+   <th:block th:insert="~{fragments/head :: head}"></th:block>
+
+    <style>
+       /* Style for the form container */
+        .mainContent {        
+            display: flex;
+            flex: 1;
+            justify-content: center;
+            align-items: center;
+          }
+
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                width: 90%;
+                padding: 10px;
+            }
+        }
+
+        input[type=text], input[type=password] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            padding: 16px;
+        }
+
+        form button {
+            width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+
+   
+    
+</head>
+
+ 
+<body>
+
+<!-- Include header -->
+<th:block th:insert="~{fragments/header :: header}"></th:block>
+
+
+<!-- Main Content -->
+<div class="mainContent w3-display-container">
+   <form th:action="@{/login}" method="post" class="form-container" id="loginForm">
+        <div class="container">
+               
+            <label for="emailId"><b>Email</b></label>
+            <input class="login" type="text" placeholder="Please enter your email" name="emailId" id="email" required>
+
+            <label for="password"><b>Password</b></label>
+            <input type="password" placeholder="Please enter Password" name="pwd" id="pwd" required>
+           
+          <!-- Display error message if present 
+               
+               <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div> -->
+               
+               
+             <div class="alert" th:if="${errorMessage}" th:text="${errorMessage}" style="margin:10px; color:red;"></div>
+               
+            <button id="login" type="submit">Login</button>
+        </div>
+    </form>
+</div>
+
+ <script type="text/javascript">
+ 
+    document.getElementById('login').addEventListener('click', function(e) {
+        var email = document.getElementById('emailId').value;
+        //console.log("Email: " + email);
+    });
+	
+    
+       
+    </script>
+<!-- Include footer -->
+<th:block th:insert="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

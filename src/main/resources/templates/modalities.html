@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appìl - Lessons</title>
+
+    <!-- Thymeleaf equivalent of include for head -->
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+
+    <!-- Link to local Font Awesome CSS -->
+    <link rel="stylesheet" th:href="@{/fontawesome-free-6.6.0-web/css/all.min.css}" />
+
+    <style>
+        /* Grid container and items styling */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+            margin: 20px; /* Adds margin around the grid container */
+        }
+
+        .grid-item {
+            position: relative;
+            height: 200px;
+            border: 5px solid #D6EBFF;
+            padding: 20px;
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            color: #000; /* Ensure text color is readable */
+            text-decoration: none; /* Remove underline from links */
+            transition: background-color 0.3s;
+        }
+
+        .grid-item h3 {
+            margin: 10px 0; /* Space between the icon and text */
+            font-size: 20px; /* Adjust font size for better readability */
+            color: #000;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            z-index: 1;
+            position: relative;
+        }
+
+        .grid-item i {
+            font-size: 40px; /* Adjust icon size */
+            margin-bottom: 10px; /* Space between the icon and text */
+        }
+
+        .grid-item a {
+            display: block; /* Ensure the entire grid-item area is clickable */
+            height: 100%; /* Make the link cover the entire height of the grid item */
+            width: 100%; /* Make the link cover the entire width of the grid item */
+            text-decoration: none; /* Remove underline from links */
+            color: inherit; /* Ensure text color is inherited from parent */
+        }
+
+        @media (max-width: 1024px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Thymeleaf equivalent of include for header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <div class="Content">
+        <h1 style="text-align:center">Learning Resources</h1>
+
+        <div class="grid-container">
+            <a th:href="@{/learningpage}" class="grid-item alphabet">
+                <i class="fas fa-book"></i>
+                <h3>Free Learning</h3>
+            </a>
+            <a th:href="@{/worldcountries}" class="grid-item nouns">
+                <i class="fas fa-globe"></i>
+                <h3>Countries</h3>
+            </a>
+            <a th:href="@{/flaggame}" class="grid-item verbs">
+                <i class="fas fa-flag"></i>
+                <h3>Flags Game</h3>
+            </a>
+            <a th:href="@{/pronunciationgame}" class="grid-item tense">
+                <i class="fas fa-volume-up"></i>
+                <h3>Alphabet and Pronunciation</h3>
+            </a>
+            <a th:href="@{/tobecloze}" class="grid-item tense">
+                <i class="fas fa-user"></i>
+                <h3>Pronouns and "To Be" with Famous Characters</h3>
+            </a>
+            <a th:href="@{/flashcardgame}" class="grid-item tense">
+                <i class="fas fa-lightbulb"></i>
+                <h3>Flashcard Game</h3>
+            </a>
+            <a th:href="@{/crossword}" class="grid-item tense">
+                <i class="fas fa-puzzle-piece"></i>
+                <h3>Crossword</h3>
+            </a>
+            <a th:href="@{/irregularplurals}" class="grid-item tense">
+                <i class="fas fa-list"></i>
+                <h3>Irregular Plurals</h3>
+            </a>
+            <a th:href="@{/jobsgame}" class="grid-item tense">
+                <i class="fas fa-briefcase"></i>
+                <h3>Jobs Game</h3>
+            </a>
+            <a th:href="@{/verbmatchinggame}" class="grid-item tense">
+                <i class="fas fa-exchange-alt"></i>
+                <h3>Verb Matching Game</h3>
+            </a>
+            <a th:href="@{/pastsimplematchinggame}" class="grid-item tense">
+                <i class="fas fa-history"></i>
+                <h3>Past Simple - Verb Matching Game</h3>
+            </a>
+            <a th:href="@{/gameofgoose}" class="grid-item tense">
+                <i class="fas fa-dice"></i>
+                <h3>Game of Goose</h3>
+            </a>
+            
+            <a th:href="@{/lesson1-5recap}" class="grid-item tense">
+                <i class="fas fa-dice"></i>
+                <h3>Lesson 1-5 recap</h3>
+            </a>
+        </div>
+    </div>
+
+    <!-- Thymeleaf equivalent of include for footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

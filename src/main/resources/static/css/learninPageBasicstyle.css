@@ -1,0 +1,668 @@
+/* Apply Google Font across the entire site */
+@import
+	url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap')
+	;
+
+/* The Modal (background) */
+.modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 150px; /* Adjust width as needed */
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 10px; /* Add padding for better appearance */
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    margin-left: -75px; /* Center the tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Show the tooltip text when hovering over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Modal Content */
+.modal-content {
+	background-color: #fefefe;
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+	max-width: 768px; /* Max width of the modal */
+	border-radius: 10px; /* Rounded corners */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+}
+
+/* The Close Button */
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* Modal Buttons */
+.modalButton {
+	background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 10px 5px;
+	border-radius: 5px; /* Rounded corners */
+	cursor: pointer;
+}
+
+.modalButton:hover {
+	background-color: #45a049; /* Darker green on hover */
+}
+
+/* Image styling */
+#alarm {
+	display: block;
+	margin: 0 auto 10px;
+}
+
+.thumb-up-highlight {
+	background-color: green;
+}
+
+.thumb-down-highlight {
+	background-color: red;
+}
+
+@media ( max-width : 768px) {
+	#header-container {
+		flex-direction: column;
+		text-align: center;
+		padding: 15px 10px;
+	}
+	#credits {
+		display: flex;
+		justify-content: right;
+		text-align: right;
+		margin-top: 10px;
+	}
+	h2 {
+		text-align: start;
+		justify-content: left;
+		font-size: 15px;
+	}
+}
+
+#credits {
+	margin-left: auto; /* Pushes the credits to the right */
+	margin-top: 10px;
+	/* Adds some space between h1 and credits on smaller screens */
+	font-size: 14px;
+	display: flex;
+	align-items: center;
+}
+
+#credits span {
+	font-weight: bold;
+	margin-left: 5px;
+}
+
+#togglePronounce {
+	background: none;
+	border: none;
+	cursor: pointer;
+	margin-left: 5px;
+	display: block; /* Ensure button is block level for proper spacing */
+}
+
+.buttons-container {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	justify-content: center;
+	margin-top: 10%;
+}
+
+.buttons-container button, .buttons-container a {
+	flex: 1;
+	max-width: 200px; /* Limit button width */
+	text-align: center;
+}
+
+.relation-graph .link {
+	stroke: #B0C4DE; /* Light Steel Blue */
+	stroke-width: 2px;
+}
+
+.relation-graph .node{
+	fill: #F8F8FF; /* Ghost White */
+	stroke: #483D8B; /* Dark Slate Blue */
+	stroke-width: 1.5px;
+}
+
+.relation-graph .label {
+	font-size: 14px;
+	fill: #F0E68C; /* Khaki */
+}
+
+.relation-graph .link-label {
+	font-size: 12px;
+	fill: #87CEFA; /* Light Sky Blue */
+}
+
+#result {
+	margin-top: 50px;
+	margin-bottom: 30px;
+	color: #000000; /* Black */
+}
+
+.relations, .relations svg, .relations svg * {
+	pointer-events: all;
+}
+
+.relations {
+	z-index: 1000;
+	background-color: rgba(0, 191, 255, 0.1); /* Light Blue */
+	width: 800px;
+	height: 768px;
+	position: relative;
+}
+
+#stopButton {
+	display: none;
+	background-color: #DC143C; /* Crimson */
+}
+
+/* Modern style for textarea */
+/* Base styling for text area */
+textarea {
+	width: 100%; /* Full width of the container */
+	height: 200px; /* Fixed height */
+	padding: 12px; /* Padding inside the text area */
+	font-size: 16px; /* Font size */
+	border-radius: 10px; /* Rounded corners */
+	border: 1px solid #cce6ff; /* Border styling */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+	resize: none; /* Disable resizing */
+	overflow-y: auto; /* Enable vertical scrolling if needed */
+	color: #333; /* Text color */
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	/* Smooth transition for border and shadow */
+	background-color: #fff; /* Background color */
+}
+
+/* Additional styling for button, input, select, textarea, optgroup */
+button, input, select, textarea, optgroup {
+	font: inherit; /* Inherit font styles from parent */
+	font-weight: 400; /* Font weight */
+	margin: 0; /* Remove default margin */
+}
+
+/* Focus effect for textarea */
+textarea:focus {
+	border-color: #66b5ff; /* Change border color on focus */
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	/* Increase shadow on focus */
+	outline: none; /* Remove default outline */
+}
+
+/* Placeholder text style */
+textarea::placeholder {
+	color: #888; /* Light color for placeholder text */
+	font-style: italic; /* Italicize placeholder text */
+}
+
+.input-wrapper {
+	display: flex;
+	align-items: center;
+}
+
+.enhanced, .entity {
+	text-decoration: none;
+}
+
+#result {
+	line-height: 2;
+}
+
+.enhanceble, .enhanced {
+	border-radius: 20px;
+	padding: 10px 20px;
+	margin: 5px;
+	background-color: #E5F2FF;
+	transition: background-color 0.3s ease;
+}
+
+.enhanceble:hover, .enhanced:hover {
+	background-color: #cce7ff;
+	cursor: help;
+}
+
+.enhanceble.red-highlight, .enhanced.red-highlight {
+	background-color: #DC143C; /* Crimson */
+	color: white;
+}
+
+#attribution {
+	font-size: 20px;
+}
+
+.entity {
+	padding: 10px 20px;
+	margin: 5px;
+	border-radius: 20px;
+	background-color: #ccffdd; /* Pale Green */
+	border: 2px solid #99ffc9;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.enhanced {
+	padding: 10px 20px;
+	margin: 5px;
+	border-radius: 20px;
+	background-color: #E5F2FF; /* Pale Green */
+	border: 2px solid #b3d9ff;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+	background-color: #F8F8FF; /* Ghost White */
+	margin: 10% auto;
+	padding: 20px;
+	border: 1px solid #888;
+	width: 30%;
+}
+
+.close {
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.close:hover, .close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.grid-container {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+	padding: 20px;
+}
+
+.column {
+	padding: 15px;
+}
+
+.centered-div {
+	text-align: center;
+}
+
+.centered-div img {
+	display: inline-block;
+	max-width: 100%;
+	height: auto;
+}
+
+.label {
+	word-wrap: break-word;
+	max-width: 100px;
+}
+
+#credits {
+	float: right;
+	font-size: 18px;
+	margin-top: 10px;
+}
+
+#player-credits {
+	font-weight: bold;
+}
+
+.iFrame {
+	display: none;
+	width: 100%;
+}
+
+.vending-machine {
+	width: 50%;
+	margin: 50px auto;
+	text-align: center;
+	border: 2px solid #ccc;
+	padding: 20px;
+}
+
+.finestra-scroll {
+	width: 300px;
+	height: 200px;
+	overflow: auto;
+	border: 1px solid #ccc;
+}
+
+.button {
+	background-color: #87CEFA; /* Light Sky Blue */
+	color: black;
+	padding: 10px 15px;
+	text-align: center;
+	text-decoration: none;
+	font-size: 16px;
+	cursor: pointer;
+	border: none;
+	border-radius: 5px;
+}
+
+#header-container {
+	display: flex;
+	margin-top: 20px;
+}
+
+#result:empty {
+	border: none; /* Hides the border if the result div is empty */
+}
+
+
+.popup img {
+	max-width: 100%;
+	border-radius: 5px;
+}
+
+.popup #abstract, .popup #definition {
+	margin-bottom: 10px;
+}
+
+.popup #attribution {
+	font-size: 0.8em;
+	color: #555;
+	text-align: left;
+	margin-top: 10px;
+}
+
+.popup .close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	cursor: pointer;
+}
+
+
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+    .popup {
+        width: 90vw !important; /* Make it fit smaller screens */
+        height: 90vh !important;
+    }
+
+    .popup > div {
+        flex-direction: column !important; /* Stack items vertically */
+        height: auto !important;
+        width: 100% !important;
+    }
+
+    .popup > div > div {
+        width: 100% !important;
+        height: auto !important;
+        border-left: none !important; /* Remove border when stacked */
+        border-top: 1px solid #ccc !important; /* Optional: add a top border */
+    }
+}
+
+
+/* Responsive adjustments for smaller screens */
+@media ( max-width : 768px) {
+	#txtarea {
+		height: 120px; /* Reduced height for smaller screens */
+		max-width: 100%; /* Full width on smaller screens */
+	}
+}
+
+@media ( max-width : 400px) {
+	#txtarea {
+		height: 100px; /* Further reduced height for very small screens */
+	}
+}
+
+.learningPageContent {
+	flex: 1;
+	margin: 5%;
+}
+
+.input-graph {
+	display: flex;
+	width:100%;
+	align-items: flex-start; /* Align items to the top */
+	gap: 20px; /* Space between the input-wrapper and scroll container */
+}
+
+.input-wrapper {
+    flex: 1; /* Allow the input-wrapper to grow and shrink */
+    min-width: 30%; /* Minimum width for the input-wrapper */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 10px; /* Space between vertical elements */
+}
+
+
+.centered-scroll-container {
+    flex: 1; /* Allow the scroll container to grow and shrink */
+    min-width: 300px; /* Minimum width for the scroll container */
+    display: flex;
+    flex-direction: column; /* Stack scroll container and arrows vertically */
+    width: 100%; /* Ensure it takes up full width of the parent */
+    
+    overflow: hidden; /* Prevent overflow from affecting layout */
+    align-self: center;
+    
+}
+
+.scroll-container {
+    flex: 1; /* Allow scroll container content to grow and shrink */
+    overflow: auto; /* Enable scrolling if content exceeds container size */
+    position: relative;
+    width: 100%; /* Ensure container width is 100% of its parent */
+    height: 100%; /* Ensure container height is 100% of its parent */
+}
+
+
+
+.scroll-container svg {
+	width: 100%; /* Ensure SVG width is 100% of its container */
+	height: 500px; /* Ensure SVG height is 100% of its container */
+}
+
+.input-container {
+	width: 100%; /* Ensure it takes up full width of the input-wrapper */
+}
+
+.textarea-button-wrapper {
+	display: flex;
+	align-items: center; /* Center items vertically */
+	gap: 10px; /* Space between textarea and button */
+	width: 100%; /* Ensure this container takes full width of its parent */
+}
+
+textarea {
+	flex: 1; /* Allow textarea to grow and fill available space */
+	min-width: 0; /* Allow textarea to shrink if needed */
+	padding: 12px; /* Padding inside the textarea */
+	font-size: 16px; /* Font size of the text */
+	border-radius: 10px; /* Rounded corners */
+	border: 1px solid #cce6ff; /* Light blue border */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	/* Shadow for a subtle 3D effect */
+	resize: none; /* Disable resizing */
+	overflow-y: auto; /* Enable vertical scrolling if needed */
+	color: #333; /* Text color */
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	/* Smooth transition for border and shadow changes */
+	background-color: #fff; /* White background */
+	margin: 2 px;
+}
+
+.textarea-attribution-wrapper {
+	display: flex;
+	flex-direction: column; /* Stack textarea and attribution vertically */
+	gap: 5px; /* Space between textarea and attribution */
+	flex: 1; /* Allow the wrapper to grow and take up available space */
+	gap: 10px;
+}
+
+button {
+	flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+#attribution {
+	
+	margin: 0; /* Remove default margin */
+	font-size: 8px; /* Adjust font size if needed */
+	
+	color: black; /* Set text color */
+}
+
+.textarea-buttons {
+	display: flex;	
+	gap: 20px;
+
+}
+
+/* Responsive styles */
+/* Responsive styles */
+@media (max-width: 768px) {
+   
+   .input-graph, .input-wrapper, .input-container, .textarea-attribution-wrapper, .textarea-buttons {
+   	
+   		flex-direction:column;
+   		height: 100%;
+   }
+   
+  @media (max-width: 768px) {
+  
+ 	.pageHolder {
+ 	
+ 		flex-direction:column;
+ 	
+ 	}
+  }
+  
+   
+  @media (max-width: 768px) {
+  
+ 	.search-wiki-container {
+ 	
+ 		max-width:100% !important;
+  }
+  }
+   
+   
+  
+
+#txtarea {
+    width: 100%; /* Full width */
+    height: 200px; /* Fixed height */
+    box-sizing: border-box; /* Include padding and border in the width and height */
+    margin-bottom: 10px; /* Space between textarea and buttons */
+}
+
+#analyze, #stopButton {
+    display: inline-block; /* Allows text-align: center to work */
+    width: 100%; /* Full width for buttons */
+   
+    margin: 10px 0; /* Space between buttons */
+    padding: 10px;
+    font-size: 16px;
+}
+
+   
+   .toolsButtons{
+   
+   	align-self: end;
+   }
+   
+   .input-graph {
+   
+   align-items: normal;
+   height: 500px;
+   
+   }
+   
+   #analyze, #stopButton {
+   
+   width:100%
+  
+   } 
+   
+}
+
+/* Default: Hide small screen layout, show large screen layout */
+.learningpage-smallscreen {
+    display: none;
+}
+
+.learningpage-large-screen {
+    display: block;
+}
+
+#zoom-controls {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#zoom-controls button {
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#zoom-controls button:hover {
+    background-color: #0056b3;
+}
+
+

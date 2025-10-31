@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game: Guess the Translation</title>
+      <meta name="_csrf" th:content="${_csrf.token}" />
+	<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    
+       <th:block th:replace="~{fragments/head :: head}"></th:block>
+        <link rel="stylesheet" th:href="@{/css/quiz.css}"/>
+
+    <style>
+    
+
+.quiz-container {
+        	
+        	margin: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .quiz-container img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .options button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #quiz-image {
+            
+               width: 300px;
+    height: 300px;
+            display: block; /* Remove any default inline spacing */
+            margin: 0 auto; /* Center the image horizontally */
+        }
+
+        #info-container {
+            justify-content: center;
+            margin-top: 10px;
+            text-align: left; /* Align text to the left within the container */
+            font-size: 0.5em; /* Slightly smaller text size for the info container */
+            color: #333; /* Darker text color for better readability */
+            display: flex !important; /* Use flexbox to arrange items in a line */
+            flex-wrap: wrap; /* Allow wrapping if necessary */
+            gap: 7px; /* Space between items */
+        }
+
+        #info-container p {
+            margin: 0; /* Remove default margin to align items neatly */
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <!-- Include header content -->
+     <th:block th:replace="~{fragments/header :: header}"></th:block>
+       <button id="showInstructions">?</button>
+
+    <div class="Content" style="display: flex; text-align: center; justify-content: center;">
+        <div class="quiz-container">
+            <h2>Guess the English Translation</h2>
+            <a id="image-link" href="" target="_blank">
+                <img id="quiz-image" src="" alt="Quiz Image">
+            </a>
+            <!-- Uncomment if needed -->
+            <!-- <p><em id="image-source">Image Source: </em></p> -->
+            <div id="info-container">
+                <!-- Detailed image information will be inserted here -->
+            </div>
+            <p>Italian Term: <strong id="italian-term"></strong></p>
+            <div class="options" id="options-container">
+                <!-- Buttons will be generated dynamically -->
+            </div>
+            <div class="result" id="result" style="text-align:center"></div>
+            <!-- Notification element -->
+			<div id="notification"></div>
+        </div>
+    </div>
+
+    <!-- Include JavaScript file -->
+    <script th:src="@{js/flashcardgame.js}"></script>
+
+    <!-- Include footer content -->
+      <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

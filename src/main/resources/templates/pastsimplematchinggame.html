@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Appìl - Memory</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+  
+    <style>
+        /* Your existing styles */
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: 150px;
+            height: 150px;
+            perspective: 1000px;
+            position: relative;
+        }
+
+        .game-over-popup {
+            position: fixed; 
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        #game-board .card .hover-window {
+            display: none; 
+            z-index: 10;
+        }
+
+        .front,
+        .back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+        }
+
+        .front {
+            background-color: #ccc;
+        }
+
+        .back {
+            background-color: #fff;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: white;
+        }
+
+        #memory-attribution {
+            font-size: 8px;
+            position: relative;
+            margin-top: 20px;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            z-index: 10;
+            margin: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                height: 120px;
+                width: 120px;
+            }
+
+            .text-overlay {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #game-board {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 2px;
+            }
+
+            .card {
+                height: 100px;
+                width: 100px;
+            }
+
+            .text-overlay {
+                font-size: 12px;
+            }
+        }
+
+        .present-card .back {
+            background: #b3d9ff; /* Light blue for present forms */
+            color: black;
+            font-weight: bold;
+        }
+
+        .past-card .back {
+            background: #ffb3b3; /* Light red for past forms */
+            color: black;
+            font-weight: bold;
+        }
+
+        #selection {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Difficulty Selection Styles */
+        #difficultySelection {
+            text-align: center;
+            margin: 20px;
+        }
+
+        #difficultySelection button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+    <link th:href="@{/css/quiz.css}" rel="stylesheet">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Memory Game</title>
+</head>
+
+<body>
+
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+      <button id="showInstructions">?</button>
+
+  <!-- Instruction Modal -->
+<div id="instructionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Instructions</h2>
+        <p>Welcome to the Verb Practice Game!</p>
+        <p>Your goal is to match the present tense form of a verb with its correct past tense form. For example, match "play" with "played" or "eat" with "ate".</p>
+        <p>Here's how to play:</p>
+        <ol>
+            <li><strong>Click on the cards</strong> to flip them and reveal the verb forms.</li>
+            <li><strong>Match pairs</strong> of verb forms, where each present tense card must be matched with its corresponding past tense card.</li>
+            <li><strong>Score points</strong> for each correct match. If you flip two cards that do not match, they will flip back over after a short delay.</li>
+            <li><strong>Complete the game</strong> by matching all pairs of cards to win.</li>
+        </ol>
+        <p>To practice different sets of verbs, you can select a <strong>difficulty level</strong>:</p>
+        <ul>
+            <li><strong>Level 1:</strong> Basic verbs with regular forms.</li>
+            <li><strong>Level 2:</strong> A mix of regular and irregular verbs.</li>
+            <li><strong>Level 3:</strong> More challenging verbs with irregular forms.</li>
+            <li><strong>Level 4:</strong> Very hard verbs with more complex irregular forms.</li>
+            <li><strong>Level 5:</strong> Expert level with less common and complex irregular verbs.</li>
+        </ul>
+        <p>To change the difficulty level, click on the corresponding button for the level you wish to practice. The game will reset with the new difficulty, including resetting your score and attempts.</p>
+        <p>Good luck and have fun practicing your verbs!</p>
+    </div>
+</div>
+
+
+    <!-- Difficulty Selection -->
+    <div id="difficultySelection">
+        <h2>Select Difficulty Level</h2>
+        <button onclick="setDifficulty(1)">Easy</button>
+        <button onclick="setDifficulty(2)">Medium</button>
+        <button onclick="setDifficulty(3)">Hard</button>
+        <button onclick="setDifficulty(4)">Very Hard</button>
+        <button onclick="setDifficulty(5)">Expert</button>
+    </div>
+
+    <div class="Content">
+        <h1 style="text-align:center;">Verb Matching Memory Game</h1>
+
+        <h4 style="text-align:center;">Score: <span id="score">0</span></h4>
+        <h4 style="text-align:center;">Incorrect attempts: <span id="incorrect-attempts">0</span></h4>
+
+        <div id="game-board"></div>
+    </div>
+
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+<script th:src="@{/js/pastsimple.js}"></script>
+ <script th:src="@{/js/quizfunctions.js}"></script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+<meta charset="UTF-8">
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+
+<script th:src="@{/js/quizfunctions.js}"></script>
+<title>Game - Irregular plurals</title>
+<style type="text/css">
+
+.Content {
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+#game-container {
+	background: #fff;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	width: 80%;
+}
+
+#info-container {
+	justify-content: center;
+	margin-top: 10px;
+	text-align: left; /* Align text to the left within the container */
+	font-size: 0.5em;
+	/* Slightly smaller text size for the info container */
+	color: #333; /* Darker text color for better readability */
+	display: flex !important; /* Use flexbox to arrange items in a line */
+	flex-wrap: wrap; /* Allow wrapping if necessary */
+	gap: 7px; /* Space between items */
+}
+
+#info-container p {
+	margin: 0; /* Remove default margin to align items neatly */
+}
+
+#question-container {
+	margin: 15px;
+}
+
+#image-container {
+	
+	    justify-content: center;
+    display: flex;
+}
+
+#options-container {
+
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+.option {
+	display: flex;
+	width:50%;
+	justify-content: center;
+	margin: 5px 0;
+	padding: 10px;
+	background-color: #e9ecef;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.option:hover {
+	background-color: #d6d9db;
+}
+</style>
+ <link th:href="@{/css/quiz.css}" rel="stylesheet">
+</head>
+<body>
+	<th:block th:replace="~{fragments/header:: header}"></th:block>
+	  <button id="showInstructions">?</button>
+	<div class="Content">
+		<div id="game-container">
+			<h1>Irregular Plurals Game</h1>
+			<div id="error"></div>
+			<!-- Image and its details -->
+			<div id="image-container" style="display: none;">
+				<!-- Image will be inserted here with the link -->
+			</div>
+			<div id="info-container" style="display: none;">
+				<!-- Detailed image information will be inserted here -->
+			</div>
+
+
+			<div id="question-container"></div>
+			<div id="options-container"></div>
+			<button id="next-button">Next</button>
+			<p id="feedback"></p>
+			<div id="notification"></div>
+		</div>
+	</div>
+
+	<script>
+	const singularNouns = [
+	    'child', 'tooth', 'foot', 'mouse', 'goose', 'man', 'woman', 'person', 
+	    'leaf', 'life', 'wife', 'foot', 'tooth', 'cactus', 'focus', 'cactus', 
+	    'ox', 'axis', 'crisis', 'phenomenon', 'analysis', 'hypothesis', 'thesis'
+	];
+
+	const pluralForms = [
+	    'children', 'teeth', 'feet', 'mice', 'geese', 'men', 'women', 'people',
+	    'leaves', 'lives', 'wives', 'feet', 'teeth', 'cacti', 'foci', 'cacti', 
+	    'oxen', 'axes', 'crises', 'phenomena', 'analyses', 'hypotheses', 'theses',
+	    'cats', 'dogs', 'birds', 'rats', 'mice', 'gooses'
+	];
+
+	let currentQuestionIndex = 0;
+	let score = 0;
+
+	// Function to get random plural forms for the quiz options
+	function getRandomPluralForms(correctPlural) {
+	    const incorrectPlurals = pluralForms.filter(plural => plural !== correctPlural);
+	    const shuffled = incorrectPlurals.sort(() => 0.5 - Math.random()).slice(0, 3);
+	    const allOptions = [correctPlural, ...shuffled].sort(() => 0.5 - Math.random());
+	    return allOptions;
+	}
+
+	// Function to load a new question
+	async function loadQuestion() {
+    if (currentQuestionIndex >= singularNouns.length) {
+        showResult();
+        return;
+    }
+
+    const singular = singularNouns[currentQuestionIndex];
+    const correctPlural = getCorrectPlural(singular);
+    const options = getRandomPluralForms(correctPlural);
+
+    const questionContainer = document.getElementById('question-container');
+    const optionsContainer = document.getElementById('options-container');
+    const feedback = document.getElementById('feedback');
+    const imageContainer = document.getElementById('image-container'); // Change to image-container
+    const infoContainer = document.getElementById('info-container');
+
+    questionContainer.textContent = `What is the plural of "${singular}"?`;
+    optionsContainer.innerHTML = '';
+
+    options.forEach(option => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'option';
+        optionElement.textContent = option;
+        optionElement.addEventListener('click', () => checkAnswer(option, correctPlural));
+        optionsContainer.appendChild(optionElement);
+    });
+
+    feedback.textContent = '';
+
+    // Fetch image data for the current word
+    const nounData = await getWord(singular);
+
+    if (nounData) {
+        if (nounData.img) {
+            // Create an anchor tag and an image element
+            const linkElement = document.createElement('a');
+            linkElement.href = nounData.img;
+            linkElement.target = '_blank'; // Open link in a new tab
+
+            const imgElement = document.createElement('img');
+            imgElement.src = nounData.img;
+            imgElement.alt = `Image of ${singular}`;
+            imgElement.style.display = 'block'; // Ensure the image is displayed as block
+            
+            // Append the image to the link, and the link to the container
+            linkElement.appendChild(imgElement);
+            imageContainer.innerHTML = ''; // Clear previous content
+            imageContainer.appendChild(linkElement);
+            imageContainer.style.display = 'flex'; // Show the container
+        } else {
+            imageContainer.style.display = 'none'; // Hide the container if no image URL
+        }
+
+        // Display additional information if available
+        let infoHtml = '';
+        if (nounData.imgAuthor) infoHtml += `<p><strong>Author:</strong> ${nounData.imgAuthor}</p>`;
+        if (nounData.imgTitle) infoHtml += `<p><strong>Title:</strong> ${nounData.imgTitle}</p>`;
+        if (nounData.imgLicense) infoHtml += `<p><strong>License:</strong> ${nounData.imgLicense}</p>`;
+        if (nounData.imgDescription) infoHtml += `<p><strong>Description:</strong> ${nounData.imgDescription}</p>`;
+        infoContainer.innerHTML = infoHtml;
+        infoContainer.style.display = infoHtml ? 'block' : 'none'; // Show or hide info container based on availability
+    } else {
+        imageContainer.style.display = 'none'; // Hide the container if data is not available
+        infoContainer.style.display = 'none'; // Hide the info container if data is not available
+    }
+}
+
+
+	// Function to check the selected answer
+	function checkAnswer(selectedOption, correctDescription) {
+    const feedback = document.getElementById('feedback');
+
+    if (selectedOption === correctDescription) {
+feedback.style.color = "green";
+feedback.style.fontWeight = "bold";
+        feedback.textContent = 'Correct!';
+        addPointsToUser(5);
+        score++;
+    } else {
+    	feedback.style.color = "red";
+    	feedback.style.fontWeight = "bold";
+        feedback.textContent = `Incorrect! The correct plural form is "${correctDescription}".`;
+    }
+
+    document.getElementById('next-button').disabled = false;
+}
+
+	// Function to get the correct plural form for a given singular noun
+	function getCorrectPlural(singular) {
+	    const singularToPlural = {
+	        'child': 'children',
+	        'tooth': 'teeth',
+	        'foot': 'feet',
+	        'mouse': 'mice',
+	        'goose': 'geese',
+	        'man': 'men',
+	        'woman': 'women',
+	        'person': 'people',
+	        'leaf': 'leaves',
+	        'life': 'lives',
+	        'wife': 'wives',
+	        'cactus': 'cacti',
+	        'focus': 'foci',
+	        'ox': 'oxen',
+	        'axis': 'axes',
+	        'crisis': 'crises',
+	        'phenomenon': 'phenomena',
+	        'analysis': 'analyses',
+	        'hypothesis': 'hypotheses',
+	        'thesis': 'theses'
+	    };
+
+	    return singularToPlural[singular] || '';
+	}
+
+	// Function to display the final result
+	function showResult() {
+	    const questionContainer = document.getElementById('question-container');
+	    const optionsContainer = document.getElementById('options-container');
+	    const feedback = document.getElementById('feedback');
+	    const nextButton = document.getElementById('next-button');
+
+	    questionContainer.textContent = `Game over! Your score: ${score}/${singularNouns.length}`;
+	    optionsContainer.innerHTML = '';
+	    feedback.textContent = '';
+	    nextButton.style.display = 'none';
+	}
+
+	//Event listener for the Next button
+	document.getElementById('next-button').addEventListener('click', () => {
+	    currentQuestionIndex++;
+	    document.getElementById('next-button').disabled = true;
+
+	    // Clear the image and attribution containers before loading the next question
+	    const imageContainer = document.getElementById('image-container');
+	    const infoContainer = document.getElementById('info-container');
+
+	    imageContainer.innerHTML = '';  // Clear previous image content
+	    imageContainer.style.display = 'none';  // Hide the image container
+
+	    infoContainer.innerHTML = '';  // Clear previous attribution content
+	    infoContainer.style.display = 'none';  // Hide the attribution container
+
+	    loadQuestion();
+	});
+
+
+	// Initialize the game
+	loadQuestion();
+
+</script>
+
+
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

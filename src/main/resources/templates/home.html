@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+
+<meta charset="UTF-8" />
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Appìl - Home Page</title>
+
+<!-- Include the common head content -->
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+
+
+
+<style>
+
+  /* Curtain Styling */
+        .curtain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 1s ease, visibility 1s ease, transform 1s ease;
+            transform: translateY(0);
+        }
+
+        /* Page opening effect */
+        .curtain.hide {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-100%);
+        }
+
+        /* Bouncing Arrow */
+        .arrow {
+            position: absolute;
+            bottom: 50px;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            color: black; /* Arrow color */
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+/* CSS styling (same as your original code) */
+.image-container {
+	position: relative;
+	display: inline-block;
+}
+
+.scrollable-section-featured, .scrollable-section-old {
+	text-align: center;
+}
+
+.section-item {
+	margin: 20px;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;
+    
+    box-shadow: 0 0 65px #E5F2FF;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.section-item img {
+	max-width: 100%;
+	border-radius: 5px 5px 0 0;
+}
+
+.section-item .preview-text {
+	padding: 10px;
+}
+
+.preview-text h3 {
+	
+	font-weight: bold;
+
+}
+
+.section-item {
+	position: relative;
+}
+
+@media ( max-width : 768px) {
+	.section-item {
+		margin: 10px 0;
+	}
+	.section-item img {
+		border-radius: 0;
+	}
+	.section-item .preview-text {
+		width: 90%;
+	}
+}
+
+.tooltip {
+	position: absolute;
+	display: none;
+	background-color: #fff;
+	color: #000;
+	border: 1px solid #ccc;
+	padding: 10px;
+	z-index: 1000;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	font-size: 14px;
+	line-height: 1.5;
+	max-width: 200px;
+	word-wrap: break-word;
+	transition: max-width 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+.tooltip.wider {
+	max-width: 400px;
+	padding: 15px;
+}
+
+.section-item:hover .tooltip {
+	display: block;
+}
+
+.button-container {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	margin: 10px;
+}
+
+.background-container {
+	position: relative;
+	width: 100%;
+	height: 300px;
+	background-image:
+		url('https://upload.wikimedia.org/wikipedia/commons/6/65/Flag-map_of_the_world_%282015%29.png');
+	background-size: cover;
+	background-position: top;
+	color: #fff;
+	text-align: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+.overlay-text {
+	position: absolute;
+	color: white;
+	font-size: 24px;
+	font-weight: bold;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+#results {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+	gap: 10px;
+	max-width: 80%;
+	margin: auto;
+}
+
+#results div {
+	margin-bottom: 10px;
+}
+
+#results a {
+	color: AliceBlue;
+	text-decoration: underline;
+}
+
+.fallback-message {
+	color: red;
+	font-weight: bold;
+	text-align: center;
+	margin-top: 20px;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.no-underline {
+	text-decoration: none;
+}
+
+.no-underline:hover {
+	text-decoration: underline;
+}
+
+#welcomeMessage {
+
+	margin-right: 10px;
+}
+
+ @media (max-width: 768px) {
+            .full-width-header {
+                flex-direction: row; /* Stack items vertically */
+            }
+
+            .full-width-header h1 {
+                font-size: 1.5rem; /* Adjust font size for smaller screens */
+              
+            }
+		 	
+		 	.select {
+		 		
+		 		 font-size: 1.2rem; 
+		 		
+		 	}
+          
+        }
+        
+        
+        scroll-container {
+    position: relative; /* Establish a positioning context for child elements */
+}
+
+.onWord-controls {
+    position: absolute; /* Allow positioning relative to the .scroll-container */
+    bottom: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    z-index: 10; /* Make sure controls are above the SVG */
+}
+
+.onWord-controls button {
+    margin: 5px; /* Space between buttons */
+    padding: 5px 10px; /* Button padding */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    background-color: #fff; /* Button background */
+    border: 1px solid #ccc; /* Button border */
+    border-radius: 4px; /* Rounded corners */
+}
+
+
+/* Container for the word section */
+.word-container {
+    position: relative;
+    margin: 20px;
+  
+}
+
+/* Details section styling */
+.word-details {
+    position: relative; /* Positioning over the graph */
+    z-index: 2;
+    padding: 20px;
+    color: black;
+    background: rgba(229, 242, 255, 0.8); /* Make background semi-transparent (80% opacity) */
+    width: calc(100% - 40px); /* Full width minus padding */
+    box-sizing: border-box; /* Include padding in width calculation */
+    border-radius: 8px; /* Optional: Add border radius for rounded corners */
+}
+
+
+/* Scroll container styling */
+.scroll-container {
+	width: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    z-index: 1;
+}
+
+
+@media (max-width: 768px) {
+    .word-details {
+        position: relative; /* Cambiato da absolute a relative */
+        width: 100%; /* Assicura che il testo occupi tutta la larghezza */
+        z-index: 1; /* Evita che si sovrapponga sopra tutto */
+    }
+
+    .scroll-container {
+        min-height: 300px; /* Imposta un'altezza minima per il grafico */
+        position: unset;
+        
+    }
+
+    .onWord-controls {
+        display: flex;
+        flex-direction: column; /* Evita sovrapposizioni */
+    }
+    
+    
+}
+
+/* List styling for definitions */
+.definition-list {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+    text-align: justify; /* Justify text */
+    overflow-y: auto;
+}
+
+
+
+.scroll-container svg {
+	
+	width: 100%;
+}
+
+
+
+#graphCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+</style>
+ <link rel="stylesheet" th:href="@{/css/quiz.css}"/>
+</head>
+<body>
+
+	<!-- Header -->
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+	
+	<!-- Header -->
+	<th:block th:replace="~{fragments/sidebar :: sidebar}"></th:block>
+	
+	<button class="open-btn" id="toggleSidebar">
+        <i class="fas fa-bars"></i>
+    </button>
+	
+	<button id="showInstructions">?</button>
+	
+	<div class="curtain" id="curtain" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(255, 255, 255, 0.9); color: black; width: 100%; height: 100vh; position: fixed; top: 0; left: 0; z-index: 999; transition: transform 0.5s ease;">
+   <h1 style="font-size: 2.5em; text-align: center; margin: 0;">
+    Welcome to  
+    <img src="/css/logocutout.png" alt="Logo" style="height: 50px; vertical-align: middle;"/><span style="color: rgb(144, 194, 226);">ppìl</span>
+</h1>
+    <p style="font-size: 1.2em; text-align: center; margin: 10px 0; max-width: 80%;">an application for the improvement of lexical and linguistic competence.</p>
+    <div class="arrow" style="font-size: 3em; margin-top: 20px; animation: bounce 1s infinite; cursor: pointer;">&#x2193;</div> <!-- Down arrow with bounce animation -->
+</div>
+
+	<!-- Instruction Modal -->
+<div id="instructionModal" class="modal" style="display:none">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Instructions</h2>
+        <p>Welcome to your personalized learning space!</p>
+        <p>Here’s how you can make the most of this page:</p>
+
+        <h3>1. Explore Suggested Articles</h3>
+        <p><strong>Select an Article:</strong> Scroll down to the section labeled "Select an article from the suggested ones" to view a list of suggested Wikipedia articles.</p>
+        <p><strong>Learn More:</strong> Click on any article title to be redirected to a dedicated learning page. Here, you'll find enhanced content designed to help you dive deeper into the subject matter.</p>
+
+        <h3>2. Search for Text</h3>
+        <p><strong>Free Search:</strong> If you have a specific topic in mind, use the search feature provided to look for any text or topic you're interested in.</p>
+        <p><strong>Discover and Engage:</strong> After performing a search, you’will be able to interact with the content through various activities that will help reinforce your learning.</p>
+
+        <h3>3. Interactive Learning Activities</h3>
+        <p><strong>Engage:</strong> Once you’ve selected or searched for content, participate in the interactive activities provided on the learning page.</p>
+        <p><strong>Enhance Your Understanding:</strong> These activities are designed to help you better grasp the material and apply what you've learned.</p>
+
+        <h3>4. Stay Updated</h3>
+        <p><strong>Daily Content:</strong> Check out the "daily pages" section for content updates and new suggestions tailored to your interests.</p>
+
+        <h3>Additional Notes:</h3>
+        <p><strong>Responsive Design:</strong> This page is designed to be accessible on both large screens and mobile devices. Feel free to explore from any device!</p>
+        <p><strong>Feedback:</strong> If you encounter any issues or have suggestions, please let us know so we can continue to improve your learning experience.</p>
+
+        <p>Happy learning!</p>
+    </div>
+</div>
+	
+
+	<div class="Content">
+	
+	
+
+	<div class="full-width-header" style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+    <h1 id="welcomeMessage">Welcome</h1>
+    <h1 th:text="${session.userName}">User</h1>
+    <h1>!</h1>
+</div>
+
+		<div style="display:flex">
+		<th:block th:replace="~{fragments/searchWiki :: searchWiki}"></th:block>
+		<div>
+		
+		<h1> Explore you galaxy of words</h1>
+		</div>
+		</div>
+
+	<div id="word-container" class="word-container">
+    <div class="word-details">
+        <h1>Word of the day:</h1>
+        <h2 id="word"></h2>
+        <ul id="definition" class="definition-list"></ul>
+        <p id="example"></p>
+        
+        <div style="position: relative; bottom: 10px; right: 10px; color: black; padding: 3px; font-size: 12px; border-radius: 3px;">
+        <p>Data sourced from <a href="https://wordnet.princeton.edu/" target="_blank" style="color: #003366;">WordNet</a></p>
+    </div>
+    </div>
+
+    <!-- The background graph container -->
+<div class="scroll-container">
+    <canvas id="graphCanvas"></canvas> <!-- This will hold the 3D graph -->
+</div>
+
+</div>
+
+    
+</div>
+
+
+
+
+		<h1 class="select" style="text-align: center">Select an article from the suggested ones:</h1>
+		<div class="scrollable-section-featured"></div>
+		<div class="attribution"
+			style="color: black; text-align: center; font-size: 8px; font-style: italic"></div>
+
+		<div class="scrollable-section-old"></div>
+
+		<div id="paginaDelGiornoContainer"></div>
+	
+	
+	 <script th:src="@{/js/quizfunctions.js}"></script>
+	<script th:src="@{/js/imageOfTheDay.js}"></script>
+	<script th:src="@{/js/search.js}"></script> 
+	
+	<script>
+	
+	 document.addEventListener("DOMContentLoaded", function() {
+	        var today = new Date();
+	        var curHr = today.getHours();
+	        var greeting;
+
+	        if (curHr < 12) {
+	            greeting = "Good Morning";
+	        } else if (curHr < 18) {
+	            greeting = "Good Afternoon";
+	        } else {
+	            greeting = "Good Evening";
+	        }
+
+	        document.getElementById("welcomeMessage").innerText = greeting;
+	    });
+	 
+	 var curtain = document.getElementById("curtain");
+	    var arrow = document.querySelector(".arrow");
+
+	    // Check if the user came from the login page
+	    if (document.referrer.includes("/login")) { // Adjust the URL to match your login page
+	        curtain.classList.remove("hide"); // Show the curtain
+	        setTimeout(() => {
+	            curtain.classList.add("hide"); // Automatically hide the curtain after 3 seconds
+	        }, 10000);
+	    } else {
+	        curtain.classList.add("hide"); // Hide the curtain if not coming from the login page
+	    }
+
+	    // Hide the curtain when the arrow or the curtain is clicked
+	    arrow.addEventListener("click", function() {
+	        curtain.classList.add("hide"); // Hide the curtain with a slide-up effect
+	    });
+
+	    curtain.addEventListener("click", function() {
+	        curtain.classList.add("hide");
+	    });
+     const toggleButton = document.getElementById('toggleSidebar');
+     const sidebar = document.getElementById('sidebar');
+
+     toggleButton.addEventListener('click', () => {
+         sidebar.classList.toggle('open'); // Toggle the sidebar visibility
+     });
+
+     // Keep sidebar open when hovering over it
+     sidebar.addEventListener('mouseenter', () => {
+         sidebar.classList.add('open');
+     });
+
+     sidebar.addEventListener('mouseleave', () => {
+         sidebar.classList.remove('open');
+     });
+
+     // Close sidebar when clicking outside
+     document.addEventListener('click', (event) => {
+         if (!toggleButton.contains(event.target) && !sidebar.contains(event.target)) {
+             sidebar.classList.remove('open'); // Hide sidebar when clicking outside
+         }
+     });
+	</script>
+	<!-- Footer -->
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+</body>
+</html>

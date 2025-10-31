@@ -1,0 +1,16 @@
+<div xmlns:th="http://www.thymeleaf.org" th:fragment="searchWiki" class="search-wiki-container">
+    <div class="search-container">
+        <h2 class="search-title">Search for an article:</h2>
+        <div id="cont" class="search-input-container">
+            <input type="text" id="searchQuery" class="search-input" placeholder="Enter search term...">
+            <button id="querySearch" class="search-button" onclick="searchWikipedia()">
+                Search
+            </button>
+        </div>
+        
+        <div class="search-info">
+            Search results from <a href="https://wikipedia.org" class="search-link">Wikipedia, the free encyclopedia</a>
+        </div>
+    </div>
+    <div id="results" class="search-results"></div>
+</div>

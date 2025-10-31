@@ -1,0 +1,83 @@
+.navbar-container {
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 10px 20px; /* Spacing inside the navbar */
+}
+
+.navbar-brand {
+    font-size: 25px; /* Logo text size */
+    color: rgb(144,194,226); /* Brand color */
+    text-decoration: none; /* No underline */
+    display: flex;
+    align-items: center; /* Align logo and text vertically */
+}
+
+.logo {
+    height: 50px; /* Logo height */
+    margin-right: 10px; /* Space between logo and text */
+}
+
+.navbar-links {
+    display: flex; 
+    align-items: center; /* Center items vertically */
+}
+
+.navbar-link {
+    padding: 10px 15px; /* Space around links */
+    color: #333; /* Link color */
+    text-decoration: none; /* Remove underline */
+    transition: background-color 0.3s, color 0.3s; /* Smooth background color change */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.navbar-link:hover {
+    background-color: #e0f7fa; /* Light blue background on hover */
+    color: #00796b; /* Change text color on hover */
+}
+
+/* Logout button styles */
+.logout-form {
+    display: inline; /* Display inline */
+    margin-right: 20px; /* Space to the right */
+}
+
+.navbar-button {
+    background-color: #00796b; /* Primary button color */
+    color: white; /* Button text color */
+    border: none; 
+    padding: 10px 15px; /* Padding for buttons */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor for button */
+    transition: background-color 0.3s; /* Smooth background change */
+}
+
+.navbar-button:hover {
+    background-color: #004d40; /* Darker shade on hover */
+}
+
+
+/* Menu icon for small screens */
+.menu-icon {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 10px; /* Space around the icon */
+    color: rgb(144,194,226); /* Icon color */
+    font-size: 30px; /* Icon size */
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .navbar-container {
+        flex-direction: column; /* Stack elements vertically */
+        align-items: flex-start; /* Align items to the left */
+    }
+
+    .navbar-links {        display: none; /* Hide links on small screens */
+    }
+
+    .sidebar {
+        display: flex; /* Show sidebar */
+    }
+}

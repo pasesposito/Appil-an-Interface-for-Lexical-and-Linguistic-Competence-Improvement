@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+<head>
+
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+
+
+<meta charset="UTF-8">
+<title>Lesson THREE</title>
+<style>
+#loading {
+	display: none;
+	font-size: 18px;
+	color: #007BFF;
+	margin: 20px 0;
+}
+
+.result-item {
+	cursor: pointer;
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.result-item:hover {
+	background-color: #f0f0f0;
+}
+
+.Content {
+	margin: 2%;
+}
+
+@media ( max-width : 768px) {
+	.wrapping {
+		flex-direction: column;
+	}
+	.Content {
+		width: 90%;
+		max-width: 100%;
+	}
+}
+</style>
+
+<link rel="stylesheet" th:href="@{/css/lessons.css}"
+ />
+
+</head>
+<body>
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+	<div class="wrapping">
+
+
+		<div class="sidebar-lessons">
+			<div id="section-list">
+				<!-- Section names will be dynamically added here -->
+			</div>
+		</div>
+
+	<div class="Content">
+
+    <div class="text-container active" id="section1">
+        <h1>Welcome to the third lesson on English Language Skills!</h1>
+        <p>Welcome back! We’re excited to continue our journey in mastering the English language. In this lesson, we’re going to dive into some foundational aspects of English that will significantly enhance your fluency and comprehension. By the end of this lesson, you’ll have a stronger grasp of how to use nouns and articles correctly, apply the Present Simple tense in various contexts, and expand your vocabulary with essential words related to irregular plurals, jobs, and family. These are the building blocks of effective communication in English, so let’s get started!</p>
+    </div>
+
+    <div class="text-container" id="section2">
+        <h1>Nouns and Articles</h1>
+        <p>Nouns and articles are the backbone of any sentence in English. Nouns allow us to name people, places, things, and ideas, giving our sentences meaning and clarity. For example, when you say “book,” “city,” or “happiness,” you’re using nouns to express tangible or abstract concepts.</p>
+        <p>Articles, on the other hand, are crucial for defining how specific or general a noun is. There are two main types of articles:</p>
+        <ul>
+            <li><strong>The definite article (“the”):</strong> This article is used when both the speaker and the listener know exactly which noun is being referred to. It makes the noun specific. For instance, when you say “the book,” you’re talking about a particular book that is already known to both you and your listener. Without “the,” the meaning could be unclear.</li>
+            <li><strong>The indefinite articles (“a” and “an”):</strong> These are used when the noun is not specific, meaning it could be any example of that noun. “A” is used before words starting with a consonant sound (e.g., “a cat”), and “an” is used before words starting with a vowel sound (e.g., “an apple”). These articles are essential for generalizing, making them highly useful in everyday conversation.</li>
+        </ul>
+        <p>Understanding how to use these articles will make your English more precise and effective, so make sure to pay close attention as we practice these concepts.</p>
+    </div>
+
+    <div class="text-container" id="section3">
+        <h1>Present Simple Tense</h1>
+        <p>The Present Simple tense is a fundamental tense in English, used to describe habits, general truths, and regular actions. Mastering this tense will allow you to talk about daily routines, share facts, and express habitual activities with ease.</p>
+        <p>Here’s a breakdown of how to use the Present Simple tense:</p>
+        <ul>
+            <li><strong>Positive Form:</strong> This form is straightforward. For most subjects (I, you, we, they), you use the base form of the verb without any additions (e.g., “I work,” “They play”). However, when the subject is third person singular (he, she, it), you add “-s” or “-es” to the verb (e.g., “She works,” “He plays”). This is a simple yet critical rule that needs to be remembered.</li>
+            <li><strong>Negative Form:</strong> To make a sentence negative, you need to use the auxiliary verb “do” or “does” followed by “not” and the base form of the main verb. For example, “I do not (don’t) like coffee” or “She does not (doesn’t) like coffee.” Notice that “does” is used for the third person singular, while “do” is used for other subjects. This structure helps you express actions that are not happening.</li>
+        </ul>
+        <p>As we practice, remember that the Present Simple is your go-to tense for talking about things that are generally true or regularly occur. Whether you’re describing your daily routine or stating a fact, the Present Simple will be your tool of choice.</p>
+    </div>
+
+    <div class="text-container" id="section4">
+        <h1>Irregular Plurals</h1>
+        <p>In English, most nouns are made plural by simply adding “-s” or “-es.” However, some nouns don’t follow this pattern and have irregular plural forms. These irregular plurals are exceptions to the rule and must be memorized because they don’t follow a predictable pattern.</p>
+        <p>Here are some common examples of irregular plurals:</p>
+        <ul>
+            <li><strong>Child:</strong> Children (instead of “childs”)</li>
+            <li><strong>Foot:</strong> Feet (instead of “foots”)</li>
+            <li><strong>Mouse:</strong> Mice (instead of “mouses”)</li>
+            <li><strong>Tooth:</strong> Teeth (instead of “tooths”)</li>
+        </ul>
+        <p>These irregular forms are part of everyday English, and knowing them will make your speech sound more natural and fluent. Practice using these irregular plurals in sentences to get comfortable with them. The more you use them, the easier it will become to remember them.</p>
+        <br>
+        <a th:href="@{irregularplurals}"
+><button>Go to the quiz</button></a>
+    </div>
+
+    <div class="text-container" id="section5">
+        <h1>Jobs Vocabulary</h1>
+        <p>Talking about professions is an essential skill in English, as it helps you discuss careers and job roles. Whether you’re talking about your own job or asking someone else about theirs, knowing the right vocabulary is key.</p>
+        <p>Here are some common job titles you should be familiar with:</p>
+        <ul>
+            <li><strong>Teacher:</strong> A person who educates students. Teachers play a crucial role in shaping the future by imparting knowledge and skills to their students.</li>
+            <li><strong>Doctor:</strong> A person who treats illnesses and helps people stay healthy. Doctors are vital in diagnosing and treating medical conditions, often working in hospitals or clinics.</li>
+            <li><strong>Engineer:</strong> A person who designs and builds things, whether it’s buildings, machines, or software. Engineers apply scientific and mathematical principles to solve practical problems.</li>
+            <li><strong>Chef:</strong> A person who prepares food, often in restaurants or hotels. Chefs are skilled in cooking and creating new dishes, making dining a pleasurable experience for others.</li>
+        </ul>
+        <p>Understanding these job titles will not only help you in conversations about work but will also give you a clearer picture of what different professions entail. We’ll be practicing these terms in various contexts to ensure you can use them confidently.</p>
+        <br>
+        <a th:href="@{jobsgame}"
+><b>Go to the quiz</b></a>
+    </div>
+
+    <div class="text-container" id="section6">
+        <h1>Family Vocabulary</h1>
+        <p>Family is a central part of life, and being able to talk about your family members is important in English. Family vocabulary allows you to describe relationships and discuss your relatives in detail.</p>
+        <p>Here are some key family terms you need to know:</p>
+        <ul>
+            <li><strong>Mother:</strong> A female parent. Mothers are often seen as caregivers and nurturers in many cultures.</li>
+            <li><strong>Father:</strong> A male parent. Fathers are typically associated with providing and protecting, although these roles can vary greatly.</li>
+            <li><strong>Sibling:</strong> A brother or sister. Siblings share the same parents and often grow up together, forming close bonds.</li>
+            <li><strong>Cousin:</strong> The child of your uncle or aunt. Cousins are extended family members who often share a lot of your family history and traditions.</li>
+            <li><strong>Aunt:</strong> The sister of your parent. Aunts can be close family members who play significant roles in your life, similar to parents.</li>
+            <li><strong>Uncle:</strong> The brother of your parent. Uncles often act as secondary father figures, providing support and guidance.</li>
+        </ul>
+        <p>Knowing how to describe these relationships will help you communicate more effectively about your family. We’ll also create family trees to visually represent these relationships, which will aid in understanding how these terms fit together.</p>
+    </div>
+
+    <div class="text-container" id="section7">
+        <h1>Exercise</h1>
+        <p>Now it’s time to apply everything you’ve learned in this lesson! We’ll engage in a variety of exercises designed to reinforce your understanding of nouns and articles, the Present Simple tense, irregular plurals, and vocabulary related to jobs and family.</p>
+        <p>These exercises will include filling in blanks, identifying correct forms, and using new vocabulary in sentences. The more you practice, the more confident you’ll become in using these important English language skills. Let’s get started and see how much you’ve learned!</p>
+    </div>
+
+			<div class="text-container" id="section8">
+				<h1>Lesson Summary</h1>
+				<p>In summary, today we covered nouns and articles, the Present
+					Simple tense, irregular plurals, and vocabulary related to jobs and
+					family. Reviewing these topics will help you build a stronger
+					foundation in English. Keep practicing!</p>
+
+			</div>
+
+
+
+			<div class="progress-bar">
+				<div class="progress" id="progress"></div>
+			</div>
+
+		</div>
+
+		<div class="scroll-arrows-lesson-desktop">
+			<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+			<button id="readAloud" onclick="readCurrentSection()">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="stopReading" onclick="stopReading()"
+				style="background-color: red; display: none;">
+				<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+					style="width: 24px; height: 24px;">
+			</button>
+			<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+		</div>
+	</div>
+
+
+
+
+	<div class="scroll-arrows-lesson-mobile">
+		<button id="scrollPrev" onclick="scrollToPrevious()">&lt;</button>
+		<button id="readAloud" onclick="readCurrentSection()">
+			<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+				style="width: 24px; height: 24px;">
+		</button>
+		<button id="stopReading" onclick="stopReading()"
+			style="background-color: red; display: none;">
+			<img src="/imgs/volume_up_40dp.svg" alt="Pronounce"
+				style="width: 24px; height: 24px;">
+		</button>
+		<button id="scrollNext" onclick="scrollToNext()">&gt;</button>
+	</div>
+	
+		<div class="activities">
+		<a href="irregularplurals" class="grid-item tense" target="_blank">
+                <i class="fas fa-list"></i>
+                <h3>Irregular Plurals</h3>
+            </a>
+            <a href="jobsgame" class="grid-item tense" target="_blank">
+                <i class="fas fa-briefcase"></i>
+                <h3>Jobs Game</h3>
+            </a>
+            <a th:href="@{verbmatchinggame}"
+ class="grid-item tense" target="_blank">
+                <i class="fas fa-exchange-alt"></i>
+                <h3>Verb Matching Game</h3>
+            </a>
+  	</div>
+
+
+
+	<script th:src="@{/js/lesson.js}"></script>
+
+
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+	<script>
+		function readSection(sectionId) {
+			const section = document.getElementById(sectionId);
+			if (section) {
+				const text = section.innerText || section.textContent;
+				if (text) {
+					pronounceWord(text);
+				} else {
+					console.error("No text found in the section.");
+				}
+			} else {
+				console.error("Section not found.");
+			}
+		}
+	</script>
+</body>
+</html>

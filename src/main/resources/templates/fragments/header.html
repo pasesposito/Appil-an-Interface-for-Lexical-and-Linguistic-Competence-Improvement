@@ -1,0 +1,79 @@
+<div xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="header">
+    <header>
+        <!-- Navbar (sit on top) -->
+        <div class="w3-top" style="font-size: 25px; display: flex; z-index: 10;">
+            <div class="w3-bar w3-white w3-card" id="myNavbar">
+                     
+             
+                <a th:href="@{/home}" class="w3-bar-item w3-button w3-wide" style="color: rgb(144,194,226)"><img src="/css/logocutout.png" alt="Logo" style="height: 50px; margin: 5px; vertical-align: middle;" />ppìl</a>
+
+                <!-- Right-sided navbar links -->
+                <div class="w3-bar-item w3-right w3-hide-small" style="display: flex; align-items: center; justify-content: flex-end; height:100%">
+                    <a sec:authorize="isAuthenticated()" th:href="@{/modalities}" class="w3-bar-item w3-button">Learning Activities</a>
+                    <a sec:authorize="isAuthenticated()" th:href="@{/lessons}" class="w3-bar-item w3-button">Lessons</a>
+
+                    <!-- Profile Link -->
+                    <a th:href="@{/profile}" class="w3-bar-item w3-button" sec:authorize="isAuthenticated()">
+                        <i class="fa fa-user"></i>
+                        <span th:text="${session.userName} + '\'s profile'">Profile</span>
+                    </a>
+
+                    <!-- Login and Registration Links -->
+                    <a sec:authorize="isAnonymous()" th:href="@{/login}" onclick="w3_close()" class="w3-bar-item w3-button">Login</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/registration}" onclick="w3_close()" class="w3-bar-item w3-button">Register</a>
+
+                    <!-- Logout Form -->
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline; margin-right: 20px;">
+                        <button type="submit" class="w3-bar-item w3-button" style="background:none; border:none; cursor:pointer; box-shadow: none;">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Menu icon for small screens -->
+                <a href="javascript:void(0)" style ="    display: flex;
+    /* top: 50%; */
+    height: 80%; align-items: center;" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar on small screens when clicking the menu icon -->
+        <nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large" style="display:none" id="mySidebar">
+            <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Hide menu <b>X</b></a>
+             <a th:href="@{/home}" class="w3-bar-item w3-button w3-wide" style="color: rgb(144,194,226)"><img src="/css/logocutout.png" alt="Logo" style="height: 50px; margin: 5px; vertical-align: middle;" />ppìl</a>
+            <a th:href="@{/modalities}" onclick="w3_close()" class="w3-bar-item w3-button"><b>Learning activities</b></a>
+            <a th:href="@{/lessons}" onclick="w3_close()" class="w3-bar-item w3-button"><b>Lessons</b></a>
+
+            <div sec:authorize="isAuthenticated()">
+                <a th:href="@{/profile}" onclick="w3_close()" class="w3-bar-item w3-button"><b>My Profile</b></a>
+                
+                <!-- Logout Form for Mobile -->
+                <form th:action="@{/logout}" method="post" style="display:inline;">
+                    <button type="submit" class="w3-bar-item w3-button" style="background:none; border:none; cursor:pointer; box-shadow: none;">
+                        Logout
+                    </button>
+                </form>
+            </div>
+
+            <div sec:authorize="isAnonymous()">
+                <a th:href="@{/login}" onclick="w3_close()" class="w3-bar-item w3-button"><b>Login</b></a>
+                <a th:href="@{/registration}" onclick="w3_close()" class="w3-bar-item w3-button"><b>Register</b></a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Script for opening and closing the sidebar -->
+    <script>
+    function w3_open() {
+        document.getElementById("mySidebar").style.display = "flex";
+        document.getElementById("mySidebar").style.flexDirection = "column"; 
+    }
+
+    function w3_close() {
+        document.getElementById("mySidebar").style.display = "none";
+    }
+</script>
+
+</div>

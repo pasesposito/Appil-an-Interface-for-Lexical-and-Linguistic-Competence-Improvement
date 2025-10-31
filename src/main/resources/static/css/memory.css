@@ -1,0 +1,69 @@
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+    grid-template-rows: repeat(auto-fit, minmax(150px, 1fr)); /* Dynamic row heights */
+    gap: 10px; /* Smaller gap for tighter layout */
+    max-width: 768px; /* Optional: limit the game board's width */
+    margin: 20px auto; /* Center the game board */
+    
+}
+
+.card {
+    width: 100%; /* Take up full width of grid cell */
+    height: 100%;
+    perspective: 800px;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease-in-out;
+}
+
+
+
+.card {
+    /* ... (rest of the card styles) ... */ 
+    aspect-ratio: 1/1; /* Maintain a square aspect ratio */
+}
+
+
+.card .front,
+.card .back {
+    position: absolute;
+    color: white;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+	 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.8s; 
+}
+
+.card .front {
+	
+    background-color: #eef8ff;
+   	font-size: 24px;
+    font-weight: bold;
+    z-index: 2;
+    backface-visibility: hidden;
+    
+    
+    
+}
+
+.card .back {
+    transform: rotateY(180deg);
+    color: white;
+    font-size: auto;
+    background-size: cover;
+    background-color: #a8afb3; 
+}
+
+.card img { /* For non-Wikimedia images */
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.card.flipped {
+    transform: rotateY(180deg);
+}

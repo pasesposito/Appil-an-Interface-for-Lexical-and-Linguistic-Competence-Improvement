@@ -1,0 +1,512 @@
+@charset "UTF-8";
+
+
+.Content {
+		margin: 2%;
+	}
+	
+	@media ( max-width : 768px) {
+		.wrapping {
+			flex-direction: column;
+		}
+		.Content {
+			width: 90%;
+			max-width: 100%;
+		}
+	}
+
+@media ( min-width : 601px) {
+.wrapping {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+}
+
+.activities {
+	
+	display: flex;
+    flex-direction: row;
+    width: 80%; /* Adjust width as needed */
+    align-items: center;
+    justify-content: center; /* Adjust spacing between items */
+    margin: 20px auto; /* Center the container horizontally with space from the top and bottom */
+    padding-left: 20px; /* Space from the left inside the container */
+    padding-right: 20px; /* Space from the right inside the container */
+    gap: 20px; /* Space between flex items */
+	
+}
+
+.grid-item {
+            position: relative;
+           
+            border: 5px solid #D6EBFF;
+            padding: 20px;
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            color: #000; /* Ensure text color is readable */
+            text-decoration: none; /* Remove underline from links */
+            transition: background-color 0.3s;
+        }
+
+.scroll-arrows-lesson-mobile {
+	display: flex;
+	justify-content: center;
+	position: relative;
+}
+
+.active {
+	background-color: #f0f0f0;
+}
+
+.next, .previous {
+	display: none;
+}
+
+
+.sidebar-lessons .section-name {
+	cursor: pointer;
+	padding: 10px;
+}
+
+.progress-bar {
+	width: 100%;
+	background-color: #ccc;
+}
+
+.progress {
+	height: 5px;
+	background-color: #4caf50;
+	width: 0;
+}
+
+@media ( max-width : 601px) {
+	
+	.Content{
+		
+		max-width: 100% !important;
+		width: 95% !important;
+		height: 100vh !important;
+	}
+	
+}
+
+.Content {
+	
+	background-color: #fff;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 8px;
+	position: relative;
+	height: 80%; /* Ensure height fits within viewport */
+	overflow: hidden;
+	text-align: left;
+	width: 60%; /* Adjust to ensure content stays within the viewport */
+	box-sizing: border-box;
+	
+	
+
+}
+
+.sidebar-lessons {
+  
+    overflow-y: auto !important;
+   	align-content: center;
+    top: 10%;   
+    left: 0;
+    width: 28%;
+    border-right: 1px solid #ccc;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+#section-list {
+	
+	 margin: 5%;
+}
+
+.main-content {
+    margin-left: 220px; /* Ensure main content starts after sidebar-lessons */
+    padding: 20px;
+}
+
+.section-name {
+    cursor: pointer;
+    margin-bottom: 10px;
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis (...) for overflow text */
+}
+
+.section-name.active {
+    font-weight: bold;
+    color: blue; /* Highlight active section */
+}
+
+.progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: #ccc;
+}
+
+.progress {
+    height: 100%;
+    background-color: blue; /* Progress bar color */
+}
+
+
+button {
+    font-size: 20px;
+}
+        
+
+        .text-container {
+            height: 100%; /* Full viewport height */
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            opacity: 1; /* Ensure initial opacity is 1 */
+            transition: transform 0.5s ease, opacity 0.5s ease; /* Smooth transition for transform and opacity */
+            position: relative;
+            top: 0;
+            left: 100%; /* Start off-screen to the right */
+            min-height: 100px; /* Minimum height to prevent collapsing when empty */
+            overflow-y: auto;  /* Add scrollbar if content exceeds height */
+        }
+
+        .text-container.active {
+            left: 0; /* Active section is fully visible */
+        }
+
+        .text-container.previous {
+            left: -100%; /* Move off-screen to the left */
+        }
+
+        .text-container.next {
+            left: 100%; /* Move off-screen to the right */
+        }
+
+        .text-container h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .text-container p {
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        
+        /* Navigation links */
+        .nav-link {
+            display: block;
+            margin-bottom: 10px;
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Hover effect */
+        .hoverable {
+            position: relative;
+            display: inline-block;
+            color: #007bff;
+        }
+
+        .hoverable::after {
+            content: attr(data-hover-text);
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            background-color: #f9f9f9;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: nowrap;
+            display: none;
+            z-index: 1;
+        }
+
+        .hoverable:hover::after {
+            display: block;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+
+			top:0;
+            width: 100%;
+            height: 8px;
+            background-color: #ddd;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #E5F2FF;
+            width: 0%;
+        }
+
+        /* Scroll arrows container */
+.scroll-arrows-lesson-desktop {
+   position: absolute;
+    display: flex;
+    flex-direction: row;
+    left: 80%;
+    bottom: 5%;
+    z-index: 200;
+}
+
+/* Scroll arrows buttons */
+.scroll-arrows-lesson-desktop button {
+    background-color: white;
+	    border: 5px solid #D6EBFF;
+	    
+	    border-radius: 20px;
+	    padding: 10px;
+	    cursor: pointer;
+	    user-select: none; /* Prevent text selection on drag */
+	    margin: 0 5px; /* Add space between buttons */
+	   
+	    margin: 2%;
+}
+
+.scroll-arrows-lesson-mobile  {
+        display:none;
+    }
+
+/* Hover effect for buttons */
+.scroll-arrows-lesson-desktop button:hover {
+    background-color: #005599;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+		
+		
+		.sidebar-lessons {
+		
+			display: none;
+		}
+		
+		.scroll-arrows-lesson-desktop  {
+        display: none; 
+    }
+    
+	   .scroll-arrows-lesson-mobile {
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	}
+	
+	.scroll-arrows-lesson-mobile button {
+	    background-color: white;
+	    border: 5px solid #D6EBFF;
+	    font-size: 15px;
+	    border-radius: 20px;
+	    padding: 10px;
+	    cursor: pointer;
+	    user-select: none; /* Prevent text selection on drag */
+	    margin: 0 5px; /* Add space between buttons */
+	    width: 30%;
+	    margin: 2%;
+	}
+
+   
+    
+}
+
+        .scroll-arrows-lesson-desktop button:hover {
+            background-color: #0056b3;
+        }
+        
+        
+         .word:has(span) {
+    
+    	 cursor: url('imgs/volume_up_40dp.svg'), auto;
+}
+
+   
+
+		.letter-container {
+        
+        border: 2px solid #333;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+    .letter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
+        margin: 10px;
+        background-color: aliceblue;
+        border: 1px solid #333;
+        font-size: 24px;
+        cursor: pointer;
+    }
+    
+   .highlight {
+        background-color: #77DD77;
+    }
+    
+	.wrapper {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 50px;
+    }
+    .word {
+        display: inline-block;
+        margin: 0 5px;
+        padding: 2px;
+        cursor: pointer;
+    }
+    .word:hover {
+        background-color: lightblue;
+    }
+    
+ 
+
+    .sidebar-lessons h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    .sidebar-lessons .section-name {
+        padding: 5px 10px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .sidebar-lessons .section-name:hover {
+        background-color: #e0e0e0;
+    }
+    
+    
+    .sidebar-lessons .section-name.active {
+    font-weight: bold;
+    color: #003666; /* Highlight active section */
+}
+  
+
+
+.scrolling-box-container {
+    display: flex;
+  
+    white-space: nowrap;
+    margin: 20px 0;
+}
+
+.number-box {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.number-box:hover {
+    background-color: #ddd;
+}
+
+.image-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.number-container, .scrambled-numbers {
+	
+	margin-top: 20px;
+	margin-bottom: 20px;
+
+}
+
+    #game-container {
+		text-align:center;
+        max-width: 768px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #flag-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            margin: 5px;
+        }
+        .option-btn:hover {
+            background-color: #45a049;
+        }
+        #feedback {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            display: none; /* Initially hidden */
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            animation: fadeOut 2s ease-in-out forwards; /* CSS animation for feedback */
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+        
+        .country-container {
+        	
+        	margin: 20px;
+        }

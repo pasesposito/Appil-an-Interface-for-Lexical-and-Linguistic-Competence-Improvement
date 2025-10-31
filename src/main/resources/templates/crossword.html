@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<title>Crossword</title>
+<!-- Include footer content -->
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<th:block th:replace="~{fragments/head:: head}"></th:block>
+<style>
+.crossword-container {
+    background-color: #F7F9FC; /* Soft background color for contrast */
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#buyLetterButton {
+    background-color: #b2f2b0; 
+   
+}
+
+.rotate-alert {
+    display: none; /* Initially hidden */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    color: white;
+    text-align: center;
+    z-index: 9999; /* Ensure it's on top */
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+}
+
+.rotate-alert p {
+    margin: 0;
+    padding: 20px;
+    background: #333;
+    border-radius: 10px;
+}
+
+
+#crossword {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 5px;
+}
+
+.cell {
+    border: 1px solid #E5F2FF; /* Softer blue border */
+    text-align: center;
+    font-size: 24px;
+    position: relative;
+    background-color: #FFF; /* White background for cells */
+}
+
+.cell input {
+    width: 90%;
+    height: 90%;
+    text-align: center;
+    font-size: 24px;
+    border: none;
+    background-color: #FFF; /* White input background */
+    color: #333; /* Dark gray text */
+}
+
+.cell-number {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    font-size: 10px;
+    color: #555; /* Medium gray for cell numbers */
+}
+
+.black-cell {
+    background-color: #E5F2FF; 
+    border: 1px solid #E5F2FF; /* Pure black border */
+}
+
+.starting-letter {
+    border-left: 3px solid #00254D; /* Bright blue for starting letter */
+    border-top: 3px solid #00254D;
+}
+
+.last-letter {
+    border-right: 3px solid #00254D; /* Bright blue for last letter */
+    border-bottom: 3px solid #00254D;
+}
+
+.hints {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    color: #2C3E50; /* Darker blue for hints text */
+}
+
+.crossword-buttons {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.locked {
+	
+	background-color: #004d1f;
+	color: white;
+}
+
+ 
+</style>
+  <link rel="stylesheet" th:href="@{/css/quiz.css}"/>
+</head>
+<body>
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+	  <button id="showInstructions">?</button>
+	  
+	  <div id="rotateAlert" class="rotate-alert">
+    <p>Please rotate your device for a better experience.</p>
+</div>
+	  
+	
+	<div id="instructionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Crossword Game Instructions</h2>
+        <p>Welcome to the Crossword Puzzle Game!</p>
+        <p>Your goal is to solve the crossword puzzle by filling in letters according to the hints provided. The words chosen for the crossword are those you have encountered during the <strong>free learning phase.</strong></p> <p>Here's how to play:</p>
+        <ol>
+            <li><strong>Start the Game</strong>: Review the crossword grid and the hints for horizontal and vertical words. Each hint corresponds to a word you need to place correctly on the grid.</li>
+            <li><strong>Filling in the Grid</strong>: Click on any cell to select it. If the cell is part of a word, it will turn light green, and the correct letter will be shown when you purchase it.</li>
+            <li><strong>Buying Letters</strong>: Click on a cell to purchase a letter. A "Buy Letter" button will appear. Click it to buy the letter for that cell. Each letter costs <strong>5 points</strong>. Ensure you have enough points before purchasing.</li>
+            <li><strong>Inputting Letters</strong>: Type the letter you believe is correct into the selected cell. The cell will turn dark green if the letter is correct and red if it's incorrect. Correct letters will lock the cell and disable further edits.</li>
+            <li><strong>Showing Solutions</strong>: Click the "Show Solutions" button to reveal all correct letters and lock the cells.</li>
+        </ol>
+        <p><strong>Points Management</strong>:</p>
+        <ul>
+            <li><strong>Deduct Points:</strong> Points will be deducted each time you buy a letter. The remaining points will be displayed on the screen.</li>
+            <li><strong>Earn Points:</strong> Points are earned separately and are necessary for purchasing letters.</li>
+        </ul>
+        <p><strong>Additional Features:</strong></p>
+        <ul>
+            <li>Cells will automatically lock when the correct letter is entered or when solutions are shown.</li>
+            <li>If there is an error while deducting points or buying letters, a message will be displayed. </li>
+        </ul>
+              
+        <p>Good luck and enjoy solving the crossword puzzle!</p>
+    </div>
+</div>
+	
+
+
+	<div class="Content">
+
+
+
+		<div class="crossword-container">
+
+			<div class="crossword-buttons">
+				<div id="crossword"></div>
+				<button id="showSolutions">Show Solutions</button>
+				<button id="buyLetterButton" style="display: none;">Buy
+					Letter</button>
+				<p>
+					Points: <span id="player-credits"></span>
+				</p>
+			</div>
+
+			<!-- Hidden input to keep track of the cell to be purchased -->
+			<input type="hidden" id="buyLetterRow"> <input type="hidden"
+				id="buyLetterCol">
+
+			<div class="hints">
+				<div class="horizontal-hints">
+					<h3>Horizontal Hints</h3>
+					<ul id="horizontalHintsList"></ul>
+				</div>
+
+				<div class="vertical-hints">
+					<h3>Vertical Hints</h3>
+					<ul id="verticalHintsList"></ul>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</body>
+<script th:src="@{js/crossword.js}"></script>
+ <script th:src="@{/js/quizfunctions.js}"></script>
+ <script>
+ 
+ function checkOrientation() {
+	    // Check if the screen width is less than 450px
+	    if (window.innerWidth < 450 && window.innerHeight > window.innerWidth) {
+	        document.getElementById("rotateAlert").style.display = "flex"; // Show the alert
+	    } else {
+	        document.getElementById("rotateAlert").style.display = "none"; // Hide the alert
+	    }
+	}
+
+	// Run the function on load and on resize
+	window.addEventListener("resize", checkOrientation);
+	window.addEventListener("load", checkOrientation);
+
+ 
+ </script>
+
+
+<!-- Include footer content -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</html>

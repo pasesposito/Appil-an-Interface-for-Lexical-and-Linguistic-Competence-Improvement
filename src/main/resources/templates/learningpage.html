@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<meta charset="UTF-8" />
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Appìl - Learning Page</title>
+<th:block th:replace="~{fragments/head :: head}"></th:block>
+ <link rel="stylesheet" th:href="@{/css/learninPageBasicstyle.css}"/>
+ <link rel="stylesheet"th:href="@{/css/quiz.css}"/>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/FlyControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/controls/DragControls.js"></script>
+    <script th:src="@{/js/search.js}"></script>
+
+<style>
+
+
+.search-wiki-container {
+
+	width:100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    max-width: 30%;
+    
+}
+
+/* Style for all buttons in .buttons-container */
+.buttons-container button {
+	background-color: #D6EBFF; /* Background color */
+	color: #333; /* Text color for visibility (adjust if needed) */
+	border-radius: 20px; /* Rounded corners */
+	padding: 10px 20px; /* Padding for button size */
+	font-size: 16px; /* Font size */
+	font-weight: bold;
+	cursor: pointer; /* Cursor style on hover */
+	display: flex; /* Flexbox to align icons and text */
+	align-items: center; /* Center align items vertically */
+	justify-content: center; /* Center align items horizontally */
+	gap: 10px; /* Space between text and icons */
+	transition: background-color 0.3s ease, color 0.3s ease;
+	/* Smooth transition */
+}
+
+/* Button hover effects */
+.buttons-container button:hover {
+	background-color: #b3d4ff; /* Slightly darker shade on hover */
+	color: #000; /* Text color on hover */
+}
+
+/* Style for icons inside buttons */
+.buttons-container .icon {
+	height: 20px; /* Adjust icon size as needed */
+	width: 20px; /* Adjust icon size as needed */
+}
+
+/* Specific styles for the sendData button */
+#sendData {
+	background-color: white;
+	border: 5px solid #D6EBFF;
+	color: #333;
+}
+
+#sendData:hover {
+	background-color: #b3d4ff;
+	color: #000;
+}
+
+/* Specific styles for the generateCloze button */
+#generateCloze {
+	background-color: white;
+	border: 5px solid #D6EBFF;
+	color: #333;
+}
+
+#generateCloze:hover {
+	background-color: #b3d4ff;
+	color: #000;
+}
+
+/* Specific styles for the playtheMemory button */
+#playtheMemory button {
+	background-color: white;
+	border: 5px solid #D6EBFF;
+	color: #333;
+}
+
+#playtheMemory button:hover {
+	background-color: #b3d4ff;
+	color: #000;
+}
+
+/* Specific styles for the readTextAloud button */
+#readTextAloud {
+	background-color: white;
+	border: 5px solid #D6EBFF;
+	color: #333;
+}
+
+#readTextAloud:hover {
+	background-color: #b3d4ff;
+	color: #000;
+}
+
+/* Specific styles for the stopReading button */
+#stopReading {
+	background-color: white;
+	border: 5px solid #D6EBFF;
+	color: #333;
+}
+
+#stopReading:hover {
+	background-color: #b3d4ff;
+	color: #000;
+}
+
+/* Specific styles for the checkAnswers button */
+#checkAnswers {
+	background-color: white;
+	color: #333;
+}
+
+#checkAnswers:hover {
+	background-color: #b3d4ff !important;
+	color: #000;
+}
+
+#resetCloze {
+	background-color: white;
+	color: #333;
+}
+
+#resetCloze:hover {
+	background-color: #b3d4ff !important;
+	color: #000;
+}
+
+.buttons-container a {
+	text-decoration: none;
+}
+
+/* Style for the icon */
+#buttonIcon {
+	margin-top: 5px; /* Adjust the spacing between text and icon */
+	width: 24px; /* Set the width of the icon */
+	height: auto; /* Maintain aspect ratio */
+}
+
+.highlight {
+	background-color: #F0E68C;
+	font-weight: bold;
+}
+
+.cloze-container {
+	display: inline-flex;
+	align-items: center;
+}
+
+.speaker-icon, .reset-icon {
+	cursor: pointer;
+	margin-left: 8px;
+}
+
+.controls {
+	position: absolute;
+	/* Position the controls absolutely within the scroll-container */
+	top: 10px; /* Adjust as needed */
+	right: 10px; /* Adjust as needed */
+	z-index: 10; /* Ensure controls appear on top of other elements */
+}
+
+.onWord-controls {
+
+	position: absolute;
+	/* Position the controls absolutely within the scroll-container */
+	top: 10px; /* Adjust as needed */
+	z-index: 10; /* Ensure controls appear on top of other elements */
+
+
+}
+.controls button, .onWord-controls button{
+	
+	padding: 5px 10px; /* Padding for buttons */
+	margin: 2px; /* Margin between buttons */
+	cursor: pointer; /* Pointer cursor for buttons */
+}
+
+
+/* Styles for hover container */
+.hover-container {
+	position: relative;
+	display: inline-block; /* Ensure hover content is inline with link */
+	margin-right: 10px; /* Adjust as needed */
+}
+
+/* Styles for hover content */
+.hover-content {
+	display: none; /* Hide by default */
+	position: absolute;
+	background-color: #f9f9f9;
+	border: 1px solid #ccc;
+	padding: 5px;
+	z-index: 1; /* Ensure it appears above other content */
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Show hover content on hover */
+.hover-container:hover .hover-content {
+	display: block;
+}
+
+.centered-div {
+	display: none;
+}
+
+
+/* Include responsive styles */
+@media ( min-width : 768px) {
+	.Content {
+		padding: 20px;
+		margin-bottom: 50px;
+		margin-top: 20px;
+	}
+	#header-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	#header-container h1, #header-container #credits {
+		width: auto;
+	}
+	#txtarea {
+		flex: 1;
+	}
+	#result {
+		width: 100%;
+	}
+	.centered-scroll-container {
+		margin-top: 20px;
+	}
+}
+
+@media ( max-width : 768px) {
+	.Content {
+		margin-top: 0px;
+	}
+	#header-container h1 {
+		width: 100%;
+		text-align: center;
+	}
+	#header-container #credits {
+		width: 100%;
+		text-align: center;
+		margin-top: 10px;
+	}
+	#result {
+		width: 100%;
+		text-align: justify;
+	}
+	.centered-scroll-container {
+		margin-top: 10px;
+	}
+	#playtheMemory {
+		width: 100%;
+		text-align: center;
+	}
+	
+	
+}
+
+.pronounce-cursor {
+	cursor:
+		url('https://upload.wikimedia.org/wikipedia/commons/8/8d/Loud_Speaker_Icon.svg'),
+		auto;
+}
+
+.btn-toggle-pronounce, .btn-toggle-thumb-up, .btn-toggle-thumb-down {
+	display: block;
+	background-color: transparent;
+	/* Ensure the button has no background */
+	border: none; /* Remove any default border */
+	padding: 10px; /* Add some padding for better touch interaction */
+	cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.btn-toggle-pronounce .icon, .btn-toggle-thumb-up .icon,
+	.btn-toggle-thumb-down .icon, #sendData img {
+	width: 24px; /* Set the width of the image */
+	height: 24px; /* Set the height of the image */
+}
+
+/* Responsive adjustments if needed */
+@media ( max-width : 768px) {
+	.btn-toggle-pronounce .icon, .btn-toggle-thumb-up .icon,
+		.btn-toggle-thumb-down .icon {
+		width: 20px; /* Adjust width for mobile if needed */
+		height: 20px; /* Adjust height for mobile if needed */
+	}
+}
+
+.toolsButtons {
+	display: flex;
+	float: right;
+	gap: 10px; /* Space between buttons */
+}
+</style>
+
+
+</head>
+
+<body>
+	<!-- Header -->
+	<th:block th:replace="~{fragments/header :: header}"></th:block>
+	
+	 <button id="showInstructions">?</button>
+	 
+	 <div id="instructionModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>How to Use This Learning Page</h2>
+        
+        <p><strong>Welcome!</strong> This page is designed to help you interact with English text in various ways to improve your language skills. Here's how to make the most of it:</p>
+        
+        <p><strong>1. Enter Your Text:</strong></p>
+        <p>In the text area provided, type or paste any English text you'd like to work with. You can then analyze, read, or use the text in different activities.</p>
+
+        <p><strong>2. Send Your Text:</strong></p>
+        <p>Click the "Send" button to process your text. Once sent, you can perform various actions on the text, such as hearing it read aloud or playing a memory game.</p>
+
+        <p><strong>3. Interactive Buttons:</strong></p>
+        <ul>
+            <li><strong>Send Words:</strong> Click this to save and send specific words for further analysis.</li>
+            <li><strong>Fill the Gaps Game:</strong> Generate a cloze (fill-in-the-blank) exercise from your text to test your knowledge.</li>
+            <li><strong>Play the Memory Game:</strong> Challenge yourself with a memory game based on the text.</li>
+            <li><strong>Read Aloud:</strong> Listen to your text being read aloud for pronunciation practice.</li>
+            <li><strong>Stop Reading:</strong> Stop the text-to-speech function at any time.</li>
+            <li><strong>Check Answers:</strong> If you've created a cloze exercise, check your answers here.</li>
+            <li><strong>Reset Cloze Game:</strong> Reset the cloze exercise and start over with a new challenge.</li>
+        </ul>
+
+        <p><strong>4. Pronunciation Mode:</strong></p>
+        <p>Use the "Pronounce" button to activate pronunciation mode. When enabled, clicking on words in the text will play their pronunciation.</p>
+
+        <p><strong>5. Feedback:</strong></p>
+        <p>Provide feedback on individual words using the "Thumbs Up" or "Thumbs Down" buttons to indicate correct or incorrect pronunciations.</p>
+
+        <p><strong>6. Points:</strong></p>
+        <p>Track your progress with points displayed at the top of the page. Earn points by interacting with the activities.</p>
+
+        <p><strong>Enjoy Your Learning!</strong> Explore the different features to enhance your English skills.</p>
+    </div>
+</div>
+	 
+	 
+	 
+	
+	<div class="learningPageContent">
+	<div id="header-container">
+			<h1>
+				Hello <span th:text="${session.userName}">!</span>
+			</h1>
+			<div id="credits">
+				Points: <span id="player-credits"> Loading points...</span>
+			</div>
+
+
+			<div class="toolsButtons">
+				<button id="togglePronounce" class="btn-toggle-pronounce">
+					<img
+						src="fontawesome-free-6.6.0-web/svgs/solid/headphones-simple.svg"
+						class="icon" alt="Pronounce">
+				</button>
+
+				<button id="toggle-thumb-up" class="btn-toggle-thumb-up">
+					<img src="fontawesome-free-6.6.0-web/svgs/solid/thumbs-up.svg"
+						class="icon" alt="Thumbs Up">
+				</button>
+
+				<button id="toggle-thumb-down" class="btn-toggle-thumb-down">
+					<img src="fontawesome-free-6.6.0-web/svgs/solid/thumbs-down.svg"
+						class="icon" alt="Thumbs Down">
+				</button>
+			</div>
+		</div>
+	
+	
+	<div class="pageHolder" style="display:flex">
+	<th:block th:replace="~{fragments/searchWiki :: searchWiki}"></th:block>		
+
+
+	<div class="input-graph">
+			<div class="input-wrapper">
+			
+				<div class="input-container">
+				<h2>Inserisci qui il tuo testo: </h2>
+					<div class="textarea-attribution-wrapper">
+						<div class="textarea-buttons">
+							<textarea id="txtarea" name="txtarea"
+								placeholder="Inserisci testo qui..."></textarea>
+							<button id="analyze">Send</button>
+							<button id="stopButton" style="display: none;">Stop</button>
+
+						</div>
+
+					</div>				
+
+			</div>
+			
+			<div class="result-loading">
+			<p id="result"></p>
+			<div class="centered-div" id="loading">
+				<!-- Immagine centrata nel div -->
+				<img src="imgs/Loading_indicator.gif" width="50px" height="100px"
+					alt="Loading...">
+			</div>
+		</div>
+	
+	<div class="buttons-container">
+			<button id="sendData">
+				Send words
+				<div style="display: flex; gap: 10px;">
+					<img src="fontawesome-free-6.6.0-web/svgs/solid/thumbs-up.svg"
+						class="icon" alt="Thumbs Up"><img
+						src="fontawesome-free-6.6.0-web/svgs/solid/thumbs-down.svg"
+						class="icon" alt="Thumbs Down">
+				</div>
+			</button>
+			<button id="generateCloze">
+				Fill the gaps game<img id="buttonIcon"
+					src="fontawesome-free-6.6.0-web/svgs/solid/pen-to-square.svg"
+					alt="Pen">
+			</button>
+			<a href="memory" target="_blank" id="playtheMemory">
+				<button>
+					Play the memory game <img id="buttonIcon"
+						src="fontawesome-free-6.6.0-web/svgs/regular/rectangle-xmark.svg"
+						alt="Memory Game">
+				</button>
+			</a>
+
+			<button id="readTextAloud" onclick="read()">
+				Read <img id="buttonIcon"
+					src="fontawesome-free-6.6.0-web/svgs/solid/headphones-simple.svg"
+					alt="Headphones">
+			</button>
+			<button id="stopReading" onclick="stopReading()"
+				style="background-color: red; display: none;">Stop reading
+			</button>
+			<button id="checkAnswers"
+				style="background-color: #ccffdd; display: none;"
+				onclick="checkAnswers()">Check answers</button>
+			<button id="resetCloze"
+				style="background-color: rgb(255, 241, 153); display: none;"
+				onclick="resetCloze()">
+				Reset cloze game<img id="buttonIcon"
+					src="fontawesome-free-6.6.0-web/svgs/solid/rotate.svg"
+					alt="Rotate">
+			</button>
+		</div>
+		
+		<div class="centered-scroll-container">
+				<div class="scroll-container"></div>
+				<div class="scroll-arrows" style="bottom: 10%;">
+					<div class="scroll-arrow up" onclick="scrollUp()">&#9650;</div>
+					<div class="scroll-arrow down" onclick="scrollDown()">&#9660;</div>
+				</div>
+	</div>
+			
+	</div>
+	
+	
+				<!-- Input container for textarea and button -->
+			
+
+			<div id="clozeExercise"></div>
+	<div id="cloze"></div>
+	
+		</div>
+
+				
+	
+
+	
+		
+		
+	</div>
+	
+	</div>
+	
+	
+	
+	<div id="notification"></div>
+	<!-- Footer -->
+	  <script th:src="@{/js/quizfunctions.js}"></script>
+	 	<script>
+            // JavaScript code to handle interactions
+            let currentText = document.getElementById("txtarea").value.trim();
+
+            document.getElementById("txtarea").value = localStorage.getItem("text");
+
+            if (localStorage.getItem("fromWiki") || document.getElementById("txtarea").value.trim() !== "") {
+                const attributionHTML = `<p id="attribution" style="color:black; font-size: 10px; font-style: italic;">
+                    This is a text from the Wikipedia article <a href="https://en.wikipedia.org/wiki/${localStorage.getItem("title")}" target="_blank">${localStorage.getItem("title")}</a>: released under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-Share-Alike License 4.0</a>
+                </p>`;
+
+                const attributionModifiedHTML = `<p id="attribution-modified" style="display:none; color:black; font-size: 10px; font-style: italic; ">
+                    This is a modified text from the Wikipedia article <a href="https://en.wikipedia.org/wiki/${localStorage.getItem("title")}" target="_blank">${localStorage.getItem("title")}</a>: released under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-Share-Alike License 4.0</a>
+                </p>`;
+
+                // Select the first element with the class 'textarea-buttons'
+                const targetElement = document.querySelector(".textarea-buttons");
+                if (targetElement) {
+                    targetElement.insertAdjacentHTML('afterend', attributionHTML);
+                    targetElement.insertAdjacentHTML('afterend', attributionModifiedHTML);
+                }
+            }
+
+            // Retrieve the value of the textarea
+            var textValue = document.getElementById("txtarea").value;
+
+            if (textValue.trim() === '') {
+                document.getElementById("attribution").style.display = 'none';
+            }
+
+            document.getElementById("result").addEventListener("click", function(event) {
+                if (pronounceMode && event.target.classList.contains("enhanceble")) {
+                    pronounceWord(event.target.textContent);
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', (event) => {
+                if (window.speechSynthesis.getVoices().length !== 0) {
+                    loadVoices();
+                } else {
+                    window.speechSynthesis.onvoiceschanged = loadVoices;
+                }
+            });
+            
+            window.onload = fetchPoints;
+            
+            
+            
+            document.addEventListener("DOMContentLoaded", function() {
+                function moveResultElement() {
+                    var resultLoading = document.querySelector('.result-loading');
+                    var centeredScrollContainer = document.querySelector('.centered-scroll-container');
+                    var parentElement = centeredScrollContainer.parentNode;
+
+                    if (window.innerWidth <= 768) {  // Screen width <= 768px
+                        // Move resultLoading before centeredScrollContainer
+                        if (resultLoading !== parentElement.firstChild) {
+                            parentElement.insertBefore(resultLoading, centeredScrollContainer);
+                        }
+                    } else {
+                        // Move resultLoading after centeredScrollContainer
+                        if (resultLoading === parentElement.firstChild) {
+                            parentElement.appendChild(resultLoading);
+                        }
+                    }
+                }
+
+                // Run on load
+                moveResultElement();
+
+                // Run on resize
+                window.addEventListener('resize', moveResultElement);
+            });
+
+        </script>
+		
+	<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"> 
+<head>
+  <title>Appìl - Profile</title>
+
+  <th:block th:replace="~{fragments/head :: head}"></th:block>
+   <link rel="stylesheet" th:href="@{fontawesome-free-6.6.0-web/css/all.min.css}"
+ />
+  
+  <style>
+   body {
+  background-color: white;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  color: black;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.relation-graph {
+  width: 100%;
+  height: 75vh; /* 75% of the viewport height */
+}
+
+.graph-container {
+  width: 100% !important;
+  height: 100%; /* Adjust based on your layout requirements */
+  overflow: hidden; /* Prevent overflow if necessary */
+  position: relative; 
+}
+
+.container {
+  display: flex; /* Ensure the columns align horizontally */
+  flex-wrap: wrap; /* Allow wrapping if necessary */
+  margin: 80px 0 0;
+  width: 100%;
+}
+
+.left-column {
+  flex: 0 0 30%; /* Takes up 30% of the container's width */
+  padding: 0 20px;
+}
+
+.middle-column {
+  flex: 0 0 60%; /* Takes up 60% of the container's width */
+  padding: 0 20px;
+}
+
+.right-column {
+  display: none; /* Hide it by default */
+}
+
+@media (min-width: 768px) {
+  .right-column {
+    display: block;
+    flex: 0 0 20%; /* Takes up 20% of the container's width */
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .left-column {
+    width: 100%;
+  }
+}
+
+.controls {
+  position: fixed; /* Changed to fixed to ensure it stays on top */
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+.controls button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+}
+
+#loading {
+  display: block !important;
+}
+
+.articleTitle, .articleText {
+  cursor: pointer;
+  text-align: justify;
+}
+
+.articleTitle:hover, .articleText:hover {
+  background-color: #F0E68C;
+  cursor: pointer;
+}
+
+.articleText {
+  background-color: AliceBlue;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.articleTitle {
+  background-color: white;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.w3-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-gap: 20px;
+  margin: 20px 0;
+}
+
+.grid-item {
+  position: relative;
+  
+  border: 5px solid #D6EBFF;
+  padding: 20px;
+  text-align: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  color: #000; /* Ensure text color is readable */
+  text-decoration: none; /* Remove underline from links */
+}
+
+.grid-item a {
+  text-decoration: none;
+  color: inherit; /* Ensure link color is consistent with the grid item */
+}
+
+.grid-item:hover {
+  background-color: #b3d4ff;
+  color: #000;
+}
+
+/* Color Coding for Quick Reach Activities */
+.quick-reach-activities .grid-item.activity1 {
+  background-color: #e0f7fa; /* Light cyan */
+}
+
+.quick-reach-activities .grid-item.activity2 {
+  background-color: #b3e5fc; /* Light blue */
+}
+
+.quick-reach-activities .grid-item.activity3 {
+  background-color: #81d4fa; /* Sky blue */
+}
+
+.quick-reach-activities .grid-item.activity4 {
+  background-color: #4fc3f7; /* Blue */
+}
+
+.quick-reach-activities .grid-item.activity5 {
+  background-color: #29b6f6; /* Medium blue */
+}
+
+.quick-reach-activities .grid-item.activity6 {
+  background-color: #03a9f4; /* Dodger blue */
+}
+
+.quick-reach-activities .grid-item.activity7 {
+  background-color: #0288d1; /* Deep blue */
+}
+
+.quick-reach-activities .grid-item.activity8 {
+  background-color: #0277bd; /* Dark blue */
+}
+
+.quick-reach-activities .grid-item.activity9 {
+  background-color: #01579b; /* Navy blue */
+}
+
+.quick-reach-activities .grid-item.activity10 {
+  background-color: #003c8f; /* Darker Navy blue */
+}
+
+/* Color Coding for Lessons */
+.quick-reach-lessons .grid-item.lesson1 {
+  background-color: #e0f7fa; /* Light cyan */
+}
+
+.quick-reach-lessons .grid-item.lesson2 {
+  background-color: #b3e5fc; /* Light blue */
+}
+
+.quick-reach-lessons .grid-item.lesson3 {
+  background-color: #81d4fa; /* Sky blue */
+}
+
+.quick-reach-lessons .grid-item.lesson4 {
+  background-color: #4fc3f7; /* Blue */
+}
+
+.quick-reach-lessons .grid-item.lesson5 {
+  background-color: #29b6f6; /* Medium blue */
+}
+
+.quick-reach-lessons .grid-item.lesson6 {
+  background-color: #03a9f4; /* Dodger blue */
+}
+
+.quick-reach-lessons .grid-item.lesson7 {
+  background-color: #0288d1; /* Deep blue */
+}
+
+.quick-reach-lessons .grid-item.lesson8 {
+  background-color: #0277bd; /* Dark blue */
+}
+
+.quick-reach-lessons .grid-item.lesson9 {
+  background-color: #01579b; /* Navy blue */
+}
+
+.quick-reach-lessons .grid-item.lesson10 {
+  background-color: #003c8f; /* Darker Navy blue */
+}
+
+.scroll-arrows {
+  position: fixed;
+  bottom: 10%;
+  right: 10%;
+}
+
+.scroll-arrow {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  text-align: center;
+  font-size: 20px;
+}
+
+
+  </style>
+</head>
+
+<body class="w3-theme-l5">
+
+  <!-- Header -->
+  <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+  <!-- Page Container -->
+  <div class="container">
+    <!-- Left Column -->
+    <div class="left-column">
+      <!-- Profile -->
+      <div class="w3-card w3-round w3-white">
+        <div class="w3-container">
+          <h4 class="w3-center">
+            <span th:text="${session.userName} + '\'s profile'">Profile</span>
+          </h4>
+          <p class="w3-center"><i class="fa fa-user"></i></p>
+          <hr>
+          <p><i class="fa fa-pencil fa-fw w3-margin-right w3-text-theme"></i> Apprendente</p>
+          <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> Fisciano</p>
+          <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> -</p>
+        </div>
+      </div>
+      <br>
+
+      <!-- Quick Reach Activities Grid -->
+    <div class="quick-reach-activities">
+  <h1 style="text-align:center">Quick Reach Activities</h1>
+  <div class="grid-container">
+    <a href="learningpage" class="grid-item">
+      <i class="fa fa-book"></i>
+      <h3>Free Learning</h3>
+    </a>
+    <a href="worldcountries" class="grid-item">
+      <i class="fa fa-globe"></i>
+      <h3>Countries</h3>
+    </a>
+    <a href="flaggame" class="grid-item">
+      <i class="fa fa-flag"></i>
+      <h3>Flags Game</h3>
+    </a>
+    <a href="pronunciationgame" class="grid-item">
+      <i class="fa fa-volume-up"></i>
+      <h3>Alphabet and Pronunciation</h3>
+    </a>
+    <a href="tobecloze" class="grid-item">
+      <i class="fa fa-user"></i>
+      <h3>Pronouns and "To Be" with Famous Characters</h3>
+    </a>
+    <a href="flashcardgame" class="grid-item">
+      <i class="fa fa-credit-card"></i>
+      <h3>Flashcard Game</h3>
+    </a>
+    <a href="crossword" class="grid-item">
+      <i class="fa fa-puzzle-piece"></i>
+      <h3>Crossword</h3>
+    </a>
+    <a href="irregularplurals" class="grid-item">
+      <i class="fa fa-graduation-cap"></i>
+      <h3>Irregular Plurals</h3>
+    </a>
+    <a href="jobsgame" class="grid-item">
+      <i class="fa fa-briefcase"></i>
+      <h3>Jobs Game</h3>
+    </a>
+    <a th:href="@{verbmatchinggame}"
+ class="grid-item">
+      <i class="fa fa-repeat"></i>
+      <h3>Verb Matching Game</h3>
+    </a>
+    <a th:href="@{pastsimplematchinggame}"
+ class="grid-item">
+      <i class="fa fa-clock"></i>
+      <h3>Past Simple - Verb Matching Game</h3>
+    </a>
+    <a th:href="@{gameofgoose}"
+ class="grid-item">
+      <i class="fa fa-dice"></i>
+      <h3>Game of Goose</h3>
+    </a>
+  </div>
+</div>
+
+
+      <!-- Quick Reach Lessons Grid -->
+    <!-- Quick Reach Lessons -->
+<div class="quick-reach-lessons">
+  <h1 style="text-align:center">Quick Reach Lessons</h1>
+  <div class="grid-container">
+    <a th:href="@{lesson1}"
+ class="grid-item lesson1">
+      <h3>Lesson 1</h3>
+    </a>
+    <a th:href="@{lesson2}"
+ class="grid-item lesson2">
+      <h3>Lesson 2</h3>
+    </a>
+    <a th:href="@{lesson3}"
+ class="grid-item lesson3">
+      <h3>Lesson 3</h3>
+    </a>
+    <a th:href="@{lesson4}"
+ class="grid-item lesson4">
+      <h3>Lesson 4</h3>
+    </a>
+    <a th:href="@{lesson5}"
+ class="grid-item lesson5">
+      <h3>Lesson 5</h3>
+    </a>
+    <a th:href="@{lesson6}"
+ class="grid-item lesson6">
+      <h3>Lesson 6</h3>
+    </a>
+    <a th:href="@{lesson7}"
+ class="grid-item lesson7">
+      <h3>Lesson 7</h3>
+    </a>
+    <a th:href="@{lesson8}"
+ class="grid-item lesson8">
+      <h3>Lesson 8</h3>
+    </a>
+    <a th:href="@{lesson9}"
+ class="grid-item lesson9">
+      <h3>Lesson 9</h3>
+    </a>
+    <a th:href="@{lesson10}"
+ class="grid-item lesson10">
+      <h3>Lesson 10</h3>
+    </a>
+  </div>
+</div>
+    
+      <!-- Accordion -->
+      <div class="w3-card w3-round">
+        <div class="w3-white">
+          <button onclick="myFunction('Demo1')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            <i class="fa fa-circle-o-notch fa-fw w3-margin-right"></i> Comune di Fisciano
+          </button>
+          <div id="Demo1" class="w3-hide w3-container">
+            <p>-</p>
+          </div>
+          <button onclick="myFunction('Demo2')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            <i class="fa fa-calendar-check-o fa-fw w3-margin-right"></i> -
+          </button>
+          <div id="Demo2" class="w3-hide w3-container">
+            <p>-</p>
+          </div>
+          <button onclick="myFunction('Demo3')" class="w3-button w3-block w3-theme-l1 w3-left-align">
+            <i class="fa fa-users fa-fw w3-margin-right"></i> -
+          </button>
+          <div id="Demo3" class="w3-hide w3-container"></div>
+        </div>
+      </div>
+      <br>
+
+      <!-- Interests -->
+      <div class="w3-card w3-round w3-white w3-hide-small"></div>
+      <br>
+
+      <!-- Alert Box -->
+      <div class="w3-container w3-display-container w3-round w3-theme-l4 w3-border w3-theme-border w3-margin-bottom w3-hide-small">
+        <span onclick="this.parentElement.style.display='none'" class="w3-button w3-theme-l3 w3-display-topright">
+          <i class="fa fa-remove"></i>
+        </span>
+        <p><strong>-</strong></p>
+        <p>-</p>
+      </div>
+    </div>
+    
+    <!-- Middle Column -->
+    <div class="middle-column" id="middle-column">
+      <div id="loading-container" style="display: flex; justify-content: center; align-items: center; height: 100px;">
+        <img src="imgs/Loading_indicator.gif" id="loading" width="50px" height="50px" alt="Loading..."/>
+      </div>
+      <!-- Content will be dynamically inserted here -->
+    </div>
+
+    <!-- Right Column -->
+    <div class="right-column">
+      <div class="w3-card w3-round w3-white w3-center"></div>
+    </div>
+  </div>
+
+  <!-- Scroll Arrows -->
+  <div class="scroll-arrows" style="position: fixed; bottom: 10%; right: 10%;">
+    <div class="scroll-arrow up" onclick="scrollUp()">&#9650;</div>
+    <div class="scroll-arrow down" onclick="scrollDown()">&#9660;</div>
+  </div>
+
+  <script th:src="@{/js/profileArticles.js}"></script>
+
+  <!-- Footer -->
+  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>
